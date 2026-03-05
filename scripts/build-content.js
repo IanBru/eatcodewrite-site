@@ -84,10 +84,10 @@ function mdToHtml(md) {
     .join('\n');
 }
 
-// Blog: content/blog/*.md → dist/blog/<slug>.html + index.json
+// Blog: content/blog/*.md → dist/blog/<slug>.html + index.json (exclude *.summary.md)
 const blogPosts = [];
 if (fs.existsSync(blogDir)) {
-  const files = fs.readdirSync(blogDir).filter((f) => f.endsWith('.md'));
+  const files = fs.readdirSync(blogDir).filter((f) => f.endsWith('.md') && !f.endsWith('.summary.md'));
   for (const file of files) {
     const slug = path.basename(file, '.md');
     const raw = fs.readFileSync(path.join(blogDir, file), 'utf-8');
@@ -95,24 +95,28 @@ if (fs.existsSync(blogDir)) {
     const title = front.title ?? slug;
     const date = front.date ?? '';
     const excerpt = front.excerpt ?? '';
+    const summaryPath = path.join(blogDir, `${slug}.summary.md`);
+    const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : excerpt;
     const htmlBody = mdToHtml(body);
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(title)}</title></head><body><main><h1>${escapeHtml(title)}</h1>${htmlBody}</main></body></html>`;
     fs.writeFileSync(path.join(distBlogDir, `${slug}.html`), html, 'utf-8');
-    blogPosts.push({ slug, title, date, excerpt });
+    blogPosts.push({ slug, title, date, excerpt, summary });
   }
 }
 blogPosts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 fs.writeFileSync(path.join(distBlogDir, 'index.json'), JSON.stringify(blogPosts), 'utf-8');
 
-// Recipes: content/recipes/<slug>.md + <slug>.recipe.json → dist/recipes/<slug>.html and copy JSON
+// Recipes: content/recipes/<slug>.md + <slug>.recipe.json → dist/recipes/<slug>.html and copy JSON (exclude *.summary.md)
 const recipeList = [];
 if (fs.existsSync(recipesDir)) {
-  const mdFiles = fs.readdirSync(recipesDir).filter((f) => f.endsWith('.md'));
+  const mdFiles = fs.readdirSync(recipesDir).filter((f) => f.endsWith('.md') && !f.endsWith('.summary.md'));
   for (const file of mdFiles) {
     const slug = path.basename(file, '.md');
     const jsonPath = path.join(recipesDir, `${slug}.recipe.json`);
     if (!fs.existsSync(jsonPath)) continue;
     const rawMd = fs.readFileSync(path.join(recipesDir, file), 'utf-8');
+    const summaryPath = path.join(recipesDir, `${slug}.summary.md`);
+    const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : '';
     const instructionsHtml = mdToHtml(rawMd);
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/></head><body><main>${instructionsHtml}</main></body></html>`;
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.html`), html, 'utf-8');
@@ -124,6 +128,7 @@ if (fs.existsSync(recipesDir)) {
       name: meta.name ?? slug,
       recipeCategory: meta.recipeCategory,
       date,
+      summary,
     });
   }
 }
@@ -131,8 +136,8 @@ fs.writeFileSync(path.join(distRecipesDir, 'index.json'), JSON.stringify(recipeL
 
 // Combined entries (blog + recipes) for home list, most recent first
 const entries = [
-  ...blogPosts.map((p) => ({ type: 'blog', slug: p.slug, title: p.title, date: p.date ?? '', href: `/blog/${p.slug}` })),
-  ...recipeList.map((r) => ({ type: 'recipe', slug: r.slug, title: r.name, date: r.date ?? '', href: `/recipes/${r.slug}` })),
+  ...blogPosts.map((p) => ({ type: 'blog', slug: p.slug, title: p.title, date: p.date ?? '', summary: p.summary ?? '', href: `/blog/${p.slug}` })),
+  ...recipeList.map((r) => ({ type: 'recipe', slug: r.slug, title: r.name, date: r.date ?? '', summary: r.summary ?? '', href: `/recipes/${r.slug}` })),
 ];
 entries.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 fs.writeFileSync(path.join(distDir, 'entries.json'), JSON.stringify(entries), 'utf-8');

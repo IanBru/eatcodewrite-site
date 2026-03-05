@@ -14,6 +14,8 @@ cd app && npm install && cd ..
 npm run build
 ```
 
+Optional: generate short summaries for entries that don’t have a `<slug>.summary.md` file (used on the home list). The deploy workflow runs this via AWS Bedrock (Titan Text Lite) using the same OIDC role; new summary files are written under `content/blog/` and `content/recipes/`, then committed and pushed so we don’t re-summarize. Locally, set `AWS_REGION` (and AWS credentials) and run `npm run summarize`.
+
 Output is in `dist/`. Serve `dist/` locally to test.
 
 ## Deploy
