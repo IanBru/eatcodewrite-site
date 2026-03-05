@@ -20,8 +20,9 @@ export default function BlogPost() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
         const main = doc.querySelector('main') ?? doc.body;
-        const h1 = doc.querySelector('h1');
+        const h1 = main.querySelector('h1');
         setTitle(h1?.textContent ?? slug);
+        if (h1) h1.remove();
         setHtml(main.innerHTML);
       })
       .catch(() => setHtml(''))
