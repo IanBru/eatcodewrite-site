@@ -4,6 +4,7 @@ import BlogList from './BlogList';
 import BlogPost from './BlogPost';
 import RecipeList from './RecipeList';
 import RecipePage from './RecipePage';
+import NotFound from './NotFound';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/recipes" element={<RecipeList />} />
           <Route path="/recipes/:slug" element={<RecipePage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <footer className="ecw-footer">

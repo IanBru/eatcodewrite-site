@@ -224,3 +224,17 @@
   color: #1a5c4a;
   font-weight: bold;
 }
+
+.ecw-not-found h1 {
+  margin-top: 0;
+  color: #1a3c34;
+}
+
+.ecw-not-found a {
+  color: #1a5c4a;
+  text-decoration: none;
+}
+
+.ecw-not-found a:hover {
+  text-decoration: underline;
+}
