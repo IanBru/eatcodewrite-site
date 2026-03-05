@@ -5,47 +5,6 @@
   flex-direction: column;
 }
 
-.ecw-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  background: #1a3c34;
-  color: #e8f0e8;
-}
-
-.ecw-logo {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #e8f0e8;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-}
-
-.ecw-logo:hover {
-  color: #fff;
-}
-
-.ecw-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.ecw-nav a,
-.ecw-feed-link {
-  color: #b8d4b8;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.ecw-nav a:hover,
-.ecw-feed-link:hover {
-  color: #fff;
-}
-
 .ecw-main {
   flex: 1;
   width: 100%;
@@ -67,41 +26,58 @@
   font-size: 1.15rem;
   line-height: 1.6;
   color: #2d3d2d;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-.ecw-home-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 2rem;
+.ecw-filter-links {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
 }
 
-.ecw-card {
-  display: block;
-  padding: 1.25rem;
-  background: #f0f6f0;
-  border: 1px solid #c5d8c5;
-  border-radius: 8px;
+.ecw-filter-links a {
+  color: #1a5c4a;
   text-decoration: none;
+}
+
+.ecw-filter-links a:hover {
+  text-decoration: underline;
+}
+
+.ecw-filter-links a.ecw-filter-active {
+  font-weight: 600;
   color: #1a3c34;
-  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.ecw-card:hover {
-  border-color: #1a3c34;
-  box-shadow: 0 2px 8px rgba(26, 60, 52, 0.12);
+.ecw-entry-list .ecw-entry-ul,
+.ecw-entry-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
 }
 
-.ecw-card h2 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
+.ecw-entry-ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e8e0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.ecw-card p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #3d4d3d;
+.ecw-entry-ul a {
+  color: #1a5c4a;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.ecw-entry-ul a:hover {
+  text-decoration: underline;
+}
+
+.ecw-entry-meta {
+  font-size: 0.9rem;
+  color: #5a6b5a;
 }
 
 .ecw-subscribe {
@@ -117,42 +93,10 @@
   text-decoration: underline;
 }
 
-.ecw-blog-list h1,
-.ecw-recipe-list h1,
 .ecw-blog-post h1,
 .ecw-recipe h1 {
   margin-top: 0;
   color: #1a3c34;
-}
-
-.ecw-post-list,
-.ecw-recipe-list-ul {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 0 0;
-}
-
-.ecw-post-list li,
-.ecw-recipe-list-ul li {
-  padding: 0.6rem 0;
-  border-bottom: 1px solid #e0e8e0;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.ecw-post-list a,
-.ecw-recipe-list-ul a {
-  color: #1a5c4a;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.ecw-post-list a:hover,
-.ecw-recipe-list-ul a:hover {
-  text-decoration: underline;
 }
 
 .ecw-meta {

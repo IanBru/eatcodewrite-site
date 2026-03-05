@@ -57,9 +57,9 @@ function parseFrontMatter(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { front: {}, body: content };
   const front = {};
-  for (const line of match[1].split('\n')) {
+  for (const line of match[1].split(/\r?\n/)) {
     const m = line.match(/^(\w+):\s*(.*)$/);
-    if (m) front[m[1]] = m[2].trim();
+    if (m) front[m[1]] = m[2].trim().replace(/\r$/, '');
   }
   return { front, body: match[2] };
 }
@@ -118,14 +118,24 @@ if (fs.existsSync(recipesDir)) {
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.html`), html, 'utf-8');
     fs.copyFileSync(jsonPath, path.join(distRecipesDir, `${slug}.recipe.json`));
     const meta = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+    const date = meta.datePublished ?? meta.date ?? '';
     recipeList.push({
       slug,
       name: meta.name ?? slug,
       recipeCategory: meta.recipeCategory,
+      date,
     });
   }
 }
 fs.writeFileSync(path.join(distRecipesDir, 'index.json'), JSON.stringify(recipeList), 'utf-8');
+
+// Combined entries (blog + recipes) for home list, most recent first
+const entries = [
+  ...blogPosts.map((p) => ({ type: 'blog', slug: p.slug, title: p.title, date: p.date ?? '', href: `/blog/${p.slug}` })),
+  ...recipeList.map((r) => ({ type: 'recipe', slug: r.slug, title: r.name, date: r.date ?? '', href: `/recipes/${r.slug}` })),
+];
+entries.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+fs.writeFileSync(path.join(distDir, 'entries.json'), JSON.stringify(entries), 'utf-8');
 
 // RSS blog feed
 const baseUrl = process.env.SITE_BASE_URL || 'https://www.eatcodewrite.com';
