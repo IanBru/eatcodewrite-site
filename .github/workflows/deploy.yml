@@ -88,9 +88,20 @@ jobs:
           aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}/" \
             --delete \
             --cache-control "public, max-age=3600"
+          # Shorter cache for list data so updates appear without waiting for full invalidation
+          aws s3 cp "s3://${{ secrets.S3_BUCKET }}/entries.json" "s3://${{ secrets.S3_BUCKET }}/entries.json" \
+            --metadata-directive REPLACE --cache-control "public, max-age=60" \
+            --content-type "application/json"
 
       - name: Invalidate CloudFront cache
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
-            --paths "/*"
+          DIST_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+          INV=$(aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*" --query 'Invalidation.Id' --output text)
+          echo "Invalidation ID: $INV"
+          for i in $(seq 1 30); do
+            STATUS=$(aws cloudfront get-invalidation --distribution-id "$DIST_ID" --id "$INV" --query 'Invalidation.Status' --output text)
+            echo "Invalidation status: $STATUS"
+            [ "$STATUS" = "Completed" ] && break
+            sleep 10
+          done
+          [ "$STATUS" = "Completed" ] || (echo "Invalidation did not complete in time" && exit 1)
