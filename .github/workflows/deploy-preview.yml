@@ -1,0 +1,67 @@
+# Deploy preview when pushing to a branch whose name starts with ftr.
+# Preview is synced to s3://bucket/preview/<branch-slug>/ and must not be indexed.
+name: Deploy preview
+
+on:
+  push:
+    branches:
+      - 'ftr/**'
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Compute branch slug
+        id: slug
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          SLUG=$(echo "$BRANCH" | tr '/' '-')
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "Branch slug: $SLUG"
+
+      - name: Install and build content
+        run: |
+          npm ci
+          cd app && npm ci && cd ..
+          node scripts/build-content.js
+
+      - name: Build app with preview base and noindex
+        env:
+          VITE_BASE_URL: /preview/${{ steps.slug.outputs.slug }}/
+        run: |
+          cd app
+          npm run build
+
+      - name: Inject noindex into preview index
+        run: |
+          sed -i 's|<head>|<head>\n  <meta name="robots" content="noindex, nofollow">|' dist/index.html
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_PREVIEW }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync preview to S3
+        run: |
+          aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}/preview/${{ steps.slug.outputs.slug }}/" \
+            --delete \
+            --cache-control "public, max-age=3600"
+
+      - name: Invalidate CloudFront cache for preview path
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/preview/${{ steps.slug.outputs.slug }}/*"

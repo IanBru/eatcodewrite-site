@@ -1,0 +1,81 @@
+# Deploy to S3 when content is merged to main.
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/**'
+      - 'app/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app/package.json'
+      - 'app/package-lock.json'
+      - '.github/workflows/deploy.yml'
+      - '.github/scripts/validate.sh'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install and build
+        run: |
+          npm ci
+          cd app && npm ci && cd ..
+          npm run build
+
+      - name: Validate
+        run: |
+          test -f dist/index.html
+          test -f dist/feed.xml
+          test -f dist/eatcodewrite.css
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Build
+        run: |
+          npm ci
+          cd app && npm ci && cd ..
+          npm run build
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync to S3
+        run: |
+          aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}/" \
+            --delete \
+            --cache-control "public, max-age=3600"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"

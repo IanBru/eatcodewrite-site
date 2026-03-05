@@ -1,0 +1,34 @@
+# When a branch whose name starts with ftr is deleted, remove its preview from S3.
+name: Cleanup preview
+
+on:
+  delete:
+    branches:
+      - 'ftr/**'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'refs/heads/ftr/')
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Compute branch slug from deleted ref
+        id: slug
+        run: |
+          REF="${{ github.event.ref }}"
+          BRANCH="${REF#refs/heads/}"
+          SLUG=$(echo "$BRANCH" | tr '/' '-')
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "Removing preview prefix: preview/$SLUG/"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Remove preview prefix from S3
+        run: |
+          aws s3 rm "s3://${{ secrets.S3_BUCKET }}/preview/${{ steps.slug.outputs.slug }}/" --recursive

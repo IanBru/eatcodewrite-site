@@ -1,0 +1,17 @@
+/* Global base styles for Eat Code Write (used by app and any static pages) */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #2d3d2d;
+  background: #f8faf8;
+}
+
+a {
+  color: #1a5c4a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #1a3c34;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "eatcodewrite-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-content.js && cd app && npm run build",
+    "build:content": "node scripts/build-content.js",
+    "build:app": "cd app && npm run build",
+    "dev": "cd app && npm run dev"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "marked": "^15.0.0"
+  }
+}
