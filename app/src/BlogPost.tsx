@@ -58,10 +58,6 @@ export default function BlogPost() {
 
   return (
     <article className="ecw-blog-post">
-      <p className="ecw-page-type">
-        <img src="/Logo-Code.png" alt="" className="ecw-page-type-icon" width="24" height="24" />
-        Code
-      </p>
       <h1>{title}</h1>
       {(meta?.author || pub || showUpdated) && (
         <p className="ecw-byline">

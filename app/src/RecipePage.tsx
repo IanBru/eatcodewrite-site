@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import LogoEatIcon from './LogoEatIcon';
 
 interface RecipeData {
   name: string;
@@ -67,10 +66,6 @@ export default function RecipePage() {
 
   return (
     <article className="ecw-recipe">
-      <p className="ecw-page-type">
-        <LogoEatIcon className="ecw-page-type-icon ecw-page-type-icon--eat" size={24} />
-        Eat
-      </p>
       <h1>{recipe.name}</h1>
       {(recipe.author || pub || showUpdated) && (
         <p className="ecw-byline">

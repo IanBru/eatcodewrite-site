@@ -9,16 +9,33 @@
 }
 
 .ecw-header {
-  padding: clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem) 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
   max-width: var(--ecw-measure, 42rem);
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+  padding-left: clamp(1rem, 4vw, 1.5rem);
+  padding-right: clamp(1rem, 4vw, 1.5rem);
+  padding-top: clamp(0.75rem, 3vw, 1rem);
+  padding-bottom: clamp(0.75rem, 3vw, 1rem);
+  background: #1a2e2a;
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ecw-header {
+    background: #0f1c19;
+  }
 }
 
 .ecw-site-logo-link {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   line-height: 0;
+  flex-shrink: 0;
 }
 
 .ecw-site-logo {
@@ -27,6 +44,25 @@
   width: auto;
   max-width: 180px;
   object-fit: contain;
+}
+
+.ecw-brand {
+  margin-left: clamp(0.75rem, 3vw, 1.25rem);
+  font-size: clamp(1rem, 2vw + 0.85rem, 1.25rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ecw-brand-sep {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ecw-header--code .ecw-brand-eat {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ecw-header--eat .ecw-brand-code {
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .ecw-main {
@@ -197,9 +233,6 @@
   flex-shrink: 0;
 }
 
-.ecw-entry-item--recipe .ecw-entry-type-icon--eat {
-  color: var(--ecw-eat);
-}
 
 .ecw-subscribe {
   font-size: 0.95rem;
@@ -232,25 +265,6 @@
   font-weight: 600;
   color: var(--ecw-eat-dark);
   line-height: 1.25;
-}
-
-.ecw-page-type {
-  margin: 0 0 0.5em 0;
-  font-size: 0.875rem;
-  color: var(--ecw-text-muted);
-  display: flex;
-  align-items: center;
-  gap: 0.35em;
-}
-
-.ecw-page-type-icon {
-  width: 1.25em;
-  height: 1.25em;
-  object-fit: contain;
-}
-
-.ecw-recipe .ecw-page-type-icon--eat {
-  color: var(--ecw-eat);
 }
 
 .ecw-byline {
