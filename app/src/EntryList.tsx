@@ -8,8 +8,16 @@ interface Entry {
   slug: string;
   title: string;
   date: string;
+  datePublished?: string;
+  author?: string;
   summary?: string;
   href: string;
+}
+
+function formatDate(iso: string): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function filterFromPath(pathname: string): EntryFilter {
@@ -50,14 +58,21 @@ export default function EntryList() {
         <ul className="ecw-entry-ul">
           {filtered.map((e) => (
             <li key={`${e.type}-${e.slug}`} className={`ecw-entry-item ecw-entry-item--${e.type}`}>
-              <div className="ecw-entry-head">
-                <Link to={e.href}>{e.title}</Link>
-                <span className="ecw-entry-meta">
-                  {e.type === 'blog' ? 'Code' : 'Eat'}
-                  {e.date ? ` · ${e.date}` : ''}
-                </span>
-              </div>
-              {e.summary && <p className="ecw-entry-summary">{e.summary}</p>}
+              <Link to={e.href} className="ecw-entry-link">
+                <div className="ecw-entry-head">
+                  <span className="ecw-entry-title">{e.title}</span>
+                  <span className="ecw-entry-meta">
+                    {e.type === 'blog' ? 'Code' : 'Eat'}
+                    {e.date ? ` · ${e.date}` : ''}
+                  </span>
+                </div>
+                {e.summary && <p className="ecw-entry-summary">{e.summary}</p>}
+                {(e.author || e.datePublished ?? e.date) && (
+                  <p className="ecw-entry-byline">
+                    {[e.author, formatDate(e.datePublished ?? e.date)].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+              </Link>
             </li>
           ))}
         </ul>

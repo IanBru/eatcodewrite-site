@@ -2,11 +2,13 @@
 /**
  * Build content: blog (markdown→HTML), recipes (markdown+JSON→HTML), RSS feeds.
  * Writes to dist/ and copies public/ into dist/.
+ * Metadata: author, datePublished, dateUpdated from front matter / recipe JSON, with git fallback.
  */
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
@@ -52,6 +54,27 @@ function copyDir(src, dest) {
   }
 }
 
+/**
+ * Get author and dates from git for a content file (path relative to repo root).
+ * Returns { author, datePublished, dateUpdated } or {} if git unavailable / file not tracked.
+ */
+function getGitFileMeta(relPath) {
+  const gitPath = relPath.split(path.sep).join('/');
+  const opts = { cwd: rootDir, encoding: 'utf-8' };
+  try {
+    const first = execSync(`git log --follow --reverse --format=%an%n%aI -1 -- "${gitPath}"`, opts).trim();
+    const last = execSync(`git log --follow --format=%aI -1 -- "${gitPath}"`, opts).trim();
+    if (!first || !last) return {};
+    const [author, datePublished] = first.split('\n');
+    return { author: author || undefined, datePublished: datePublished || undefined, dateUpdated: last || undefined };
+  } catch {
+    return {};
+  }
+}
+
+// Front matter (blog): title, date (or datePublished), dateUpdated (or updated), author.
+// Recipe JSON: name, datePublished, dateModified (or dateUpdated/updated), author.
+// Any of these can be omitted; getGitFileMeta() is used as fallback for author and dates.
 // Simple front matter parse (--- ... --- then body)
 function parseFrontMatter(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -90,17 +113,21 @@ if (fs.existsSync(blogDir)) {
   const files = fs.readdirSync(blogDir).filter((f) => f.endsWith('.md') && !f.endsWith('.summary.md'));
   for (const file of files) {
     const slug = path.basename(file, '.md');
+    const relPath = path.join('content', 'blog', file);
     const raw = fs.readFileSync(path.join(blogDir, file), 'utf-8');
     const { front, body } = parseFrontMatter(raw);
+    const gitMeta = getGitFileMeta(relPath);
     const title = front.title ?? slug;
-    const date = front.date ?? '';
+    const datePublished = front.date ?? front.datePublished ?? gitMeta.datePublished ?? '';
+    const dateUpdated = front.dateUpdated ?? front.updated ?? gitMeta.dateUpdated ?? datePublished;
+    const author = front.author ?? gitMeta.author ?? '';
     const excerpt = front.excerpt ?? '';
     const summaryPath = path.join(blogDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : excerpt;
     const htmlBody = mdToHtml(body);
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(title)}</title></head><body><main><h1>${escapeHtml(title)}</h1>${htmlBody}</main></body></html>`;
     fs.writeFileSync(path.join(distBlogDir, `${slug}.html`), html, 'utf-8');
-    blogPosts.push({ slug, title, date, excerpt, summary });
+    blogPosts.push({ slug, title, date: datePublished, datePublished, dateUpdated, author, excerpt, summary });
   }
 }
 blogPosts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -114,20 +141,28 @@ if (fs.existsSync(recipesDir)) {
     const slug = path.basename(file, '.md');
     const jsonPath = path.join(recipesDir, `${slug}.recipe.json`);
     if (!fs.existsSync(jsonPath)) continue;
+    const mdRelPath = path.join('content', 'recipes', file);
+    const gitMeta = getGitFileMeta(mdRelPath);
     const rawMd = fs.readFileSync(path.join(recipesDir, file), 'utf-8');
     const summaryPath = path.join(recipesDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : '';
     const instructionsHtml = mdToHtml(rawMd);
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/></head><body><main>${instructionsHtml}</main></body></html>`;
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.html`), html, 'utf-8');
-    fs.copyFileSync(jsonPath, path.join(distRecipesDir, `${slug}.recipe.json`));
     const meta = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-    const date = meta.datePublished ?? meta.date ?? '';
+    const datePublished = meta.datePublished ?? meta.date ?? gitMeta.datePublished ?? '';
+    const dateUpdated = meta.dateModified ?? meta.dateUpdated ?? meta.updated ?? gitMeta.dateUpdated ?? datePublished;
+    const author = meta.author ?? gitMeta.author ?? '';
+    const distMeta = { ...meta, datePublished, dateUpdated, author };
+    fs.writeFileSync(path.join(distRecipesDir, `${slug}.recipe.json`), JSON.stringify(distMeta, null, 2), 'utf-8');
     recipeList.push({
       slug,
       name: meta.name ?? slug,
       recipeCategory: meta.recipeCategory,
-      date,
+      date: datePublished,
+      datePublished,
+      dateUpdated,
+      author,
       summary,
     });
   }
@@ -136,8 +171,28 @@ fs.writeFileSync(path.join(distRecipesDir, 'index.json'), JSON.stringify(recipeL
 
 // Combined entries (blog + recipes) for home list, most recent first
 const entries = [
-  ...blogPosts.map((p) => ({ type: 'blog', slug: p.slug, title: p.title, date: p.date ?? '', summary: p.summary ?? '', href: `/blog/${p.slug}` })),
-  ...recipeList.map((r) => ({ type: 'recipe', slug: r.slug, title: r.name, date: r.date ?? '', summary: r.summary ?? '', href: `/recipes/${r.slug}` })),
+  ...blogPosts.map((p) => ({
+    type: 'blog',
+    slug: p.slug,
+    title: p.title,
+    date: p.date ?? '',
+    datePublished: p.datePublished ?? p.date ?? '',
+    dateUpdated: p.dateUpdated ?? '',
+    author: p.author ?? '',
+    summary: p.summary ?? '',
+    href: `/blog/${p.slug}`,
+  })),
+  ...recipeList.map((r) => ({
+    type: 'recipe',
+    slug: r.slug,
+    title: r.name,
+    date: r.date ?? '',
+    datePublished: r.datePublished ?? r.date ?? '',
+    dateUpdated: r.dateUpdated ?? '',
+    author: r.author ?? '',
+    summary: r.summary ?? '',
+    href: `/recipes/${r.slug}`,
+  })),
 ];
 entries.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 fs.writeFileSync(path.join(distDir, 'entries.json'), JSON.stringify(entries), 'utf-8');
@@ -148,11 +203,11 @@ const feedItems = blogPosts
   .slice(0, 50)
   .map(
     (p) =>
-      `  <item><title>${escapeXml(p.title)}</title><link>${baseUrl}/blog/${p.slug}</link><guid isPermaLink="true">${baseUrl}/blog/${p.slug}</guid>${p.date ? `<pubDate>${new Date(p.date).toUTCString()}</pubDate>` : ''}${p.excerpt ? `<description>${escapeXml(p.excerpt)}</description>` : ''}</item>`
+      `  <item><title>${escapeXml(p.title)}</title><link>${baseUrl}/blog/${p.slug}</link><guid isPermaLink="true">${baseUrl}/blog/${p.slug}</guid>${p.date ? `<pubDate>${new Date(p.date).toUTCString()}</pubDate>` : ''}${p.author ? `<dc:creator>${escapeXml(p.author)}</dc:creator>` : ''}${p.excerpt ? `<description>${escapeXml(p.excerpt)}</description>` : ''}</item>`
   )
   .join('\n');
 const feedXml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>Eat Code Write — Code</title>
     <link>${baseUrl}</link>
@@ -168,11 +223,11 @@ const recipeFeedItems = recipeList
   .slice(0, 50)
   .map(
     (r) =>
-      `  <item><title>${escapeXml(r.name)}</title><link>${baseUrl}/recipes/${r.slug}</link><guid isPermaLink="true">${baseUrl}/recipes/${r.slug}</guid></item>`
+      `  <item><title>${escapeXml(r.name)}</title><link>${baseUrl}/recipes/${r.slug}</link><guid isPermaLink="true">${baseUrl}/recipes/${r.slug}</guid>${r.date ? `<pubDate>${new Date(r.date).toUTCString()}</pubDate>` : ''}${r.author ? `<dc:creator>${escapeXml(r.author)}</dc:creator>` : ''}</item>`
   )
   .join('\n');
 const recipesFeedXml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>Eat Code Write — Eat</title>
     <link>${baseUrl}/recipes</link>

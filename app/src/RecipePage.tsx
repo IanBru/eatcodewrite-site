@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 
 interface RecipeData {
   name: string;
+  author?: string;
+  datePublished?: string;
+  dateUpdated?: string;
   recipeIngredient?: string[];
   recipeYield?: string;
   prepTime?: string;
@@ -11,6 +14,12 @@ interface RecipeData {
   recipeCategory?: string;
   recipeCuisine?: string;
   [key: string]: unknown;
+}
+
+function formatDate(iso: string): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 export default function RecipePage() {
@@ -51,9 +60,25 @@ export default function RecipePage() {
   if (recipe.cookTime) times.push(`Cook: ${recipe.cookTime}`);
   if (recipe.totalTime) times.push(`Total: ${recipe.totalTime}`);
 
+  const pub = recipe.datePublished ?? '';
+  const updated = recipe.dateUpdated ?? '';
+  const showUpdated = updated && updated !== pub;
+
   return (
     <article className="ecw-recipe">
       <h1>{recipe.name}</h1>
+      {(recipe.author || pub || showUpdated) && (
+        <p className="ecw-byline">
+          {recipe.author && <span className="ecw-byline-author">{recipe.author}</span>}
+          {pub && (
+            <span className="ecw-byline-date">
+              {recipe.author ? ' · ' : ''}
+              Published {formatDate(pub)}
+            </span>
+          )}
+          {showUpdated && <span className="ecw-byline-date"> · Updated {formatDate(updated)}</span>}
+        </p>
+      )}
       <div className="ecw-recipe-meta">
         {recipe.recipeCategory && <span>{recipe.recipeCategory}</span>}
         {recipe.recipeCuisine && <span>{recipe.recipeCuisine}</span>}

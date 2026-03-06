@@ -76,12 +76,50 @@
   list-style: none;
   padding: 0;
   margin: 0 0 1.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .ecw-entry-ul li.ecw-entry-item {
-  padding: clamp(0.75rem, 2.5vw, 1rem) 0;
-  border-bottom: 1px solid var(--ecw-border);
   display: block;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ecw-entry-item--blog {
+  background: var(--ecw-code-bg);
+  border: 1px solid var(--ecw-code-border);
+}
+.ecw-entry-item--blog:hover {
+  background: rgba(30, 95, 140, 0.12);
+  border-color: var(--ecw-code);
+}
+@supports (background: color-mix(in srgb, red, blue)) {
+  .ecw-entry-item--blog:hover {
+    background: color-mix(in srgb, var(--ecw-code) 10%, var(--ecw-code-bg));
+  }
+}
+
+.ecw-entry-item--recipe {
+  background: var(--ecw-eat-bg);
+  border: 1px solid var(--ecw-eat-border);
+}
+.ecw-entry-item--recipe:hover {
+  background: rgba(45, 122, 74, 0.12);
+  border-color: var(--ecw-eat);
+}
+@supports (background: color-mix(in srgb, red, blue)) {
+  .ecw-entry-item--recipe:hover {
+    background: color-mix(in srgb, var(--ecw-eat) 10%, var(--ecw-eat-bg));
+  }
+}
+
+.ecw-entry-link {
+  display: block;
+  padding: clamp(0.75rem, 2.5vw, 1rem) clamp(1rem, 3vw, 1.25rem);
+  text-decoration: none;
+  color: inherit;
 }
 
 .ecw-entry-head {
@@ -92,29 +130,19 @@
   flex-wrap: wrap;
 }
 
-.ecw-entry-ul a {
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-block;
-  padding: 0.2em 0;
-  margin: -0.2em 0;
-  border-radius: 4px;
+.ecw-entry-title {
+  font-weight: 600;
 }
+.ecw-entry-item--blog .ecw-entry-title { color: var(--ecw-code-dark); }
+.ecw-entry-item--recipe .ecw-entry-title { color: var(--ecw-eat-dark); }
 
-.ecw-entry-item--blog a { color: var(--ecw-code); }
-.ecw-entry-item--recipe a { color: var(--ecw-eat); }
-
-.ecw-entry-ul a:hover {
+.ecw-entry-link:hover .ecw-entry-title {
   text-decoration: underline;
 }
 
 @media (any-pointer: coarse) {
-  .ecw-entry-ul a {
-    padding: 0.4em 0;
-    margin: -0.4em 0;
-    min-height: 2.5em;
-    display: inline-flex;
-    align-items: center;
+  .ecw-entry-link {
+    min-height: var(--ecw-tap, 44px);
   }
 }
 
@@ -123,6 +151,14 @@
   font-size: clamp(0.9rem, 1.5vw + 0.85rem, 0.95rem);
   color: var(--ecw-text-muted);
   line-height: 1.55;
+}
+
+.ecw-entry-byline {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.8rem;
+  color: var(--ecw-text-muted);
+  text-align: right;
+  line-height: 1.4;
 }
 
 .ecw-entry-meta {
@@ -162,6 +198,17 @@
   color: var(--ecw-eat-dark);
   line-height: 1.25;
 }
+
+.ecw-byline {
+  margin: -0.25em 0 1em 0;
+  font-size: 0.9rem;
+  color: var(--ecw-text-muted);
+  line-height: 1.5;
+}
+
+.ecw-byline-author { font-weight: 500; }
+.ecw-blog-post .ecw-byline-author { color: var(--ecw-code-dark); }
+.ecw-recipe .ecw-byline-author { color: var(--ecw-eat-dark); }
 
 .ecw-loading,
 .ecw-empty {
