@@ -1,17 +1,63 @@
-/* Global base styles for Eat Code Write (used by app and any static pages) */
+/* Global base styles — mobile-first, readable. Code = blue, Eat = green. */
+:root {
+  --ecw-text: #1a2526;
+  --ecw-text-muted: #4a5d5e;
+  /* Code — blue */
+  --ecw-code: #1e5f8c;
+  --ecw-code-dark: #163d5c;
+  --ecw-code-bg: #f0f6fa;
+  --ecw-code-border: #c5dce8;
+  /* Eat — green */
+  --ecw-eat: #2d7a4a;
+  --ecw-eat-dark: #1e5232;
+  --ecw-eat-bg: #f2f8f4;
+  --ecw-eat-border: #c8e2d4;
+  /* Neutral / mixed (All, footer, generic) */
+  --ecw-accent: #2d6b5c;
+  --ecw-accent-dark: #1e453c;
+  --ecw-bg: #f8faf9;
+  --ecw-border: #dce8e4;
+  --ecw-measure: min(42rem, 90vw);
+  --ecw-tap: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ecw-text: #e4e9e7;
+    --ecw-text-muted: #8d9c98;
+    /* Code — blue (softer on dark) */
+    --ecw-code: #6eb4e8;
+    --ecw-code-dark: #9ccaf5;
+    --ecw-code-bg: #1a2432;
+    --ecw-code-border: #2d3f52;
+    /* Eat — green (softer on dark) */
+    --ecw-eat: #5ab87d;
+    --ecw-eat-dark: #7dd49c;
+    --ecw-eat-bg: #1a2520;
+    --ecw-eat-border: #2d3d32;
+    /* Neutral */
+    --ecw-accent: #5ab09a;
+    --ecw-accent-dark: #7dc4b0;
+    --ecw-bg: #1a1e1c;
+    --ecw-border: #2d3432;
+  }
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #2d3d2d;
-  background: #f8faf8;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  line-height: 1.6;
+  color: var(--ecw-text);
+  background: var(--ecw-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: #1a5c4a;
+  color: var(--ecw-accent);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #1a3c34;
+  color: var(--ecw-accent-dark);
+  font-weight: 600;
 }
