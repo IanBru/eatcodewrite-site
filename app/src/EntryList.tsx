@@ -67,7 +67,7 @@ export default function EntryList() {
                   </span>
                 </div>
                 {e.summary && <p className="ecw-entry-summary">{e.summary}</p>}
-                {(e.author || e.datePublished ?? e.date) && (
+                {(e.author || (e.datePublished ?? e.date)) && (
                   <p className="ecw-entry-byline">
                     {[e.author, formatDate(e.datePublished ?? e.date)].filter(Boolean).join(' · ')}
                   </p>
