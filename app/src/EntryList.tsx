@@ -38,18 +38,18 @@ export default function EntryList() {
     <div className="ecw-entry-list">
       <p className="ecw-tagline">Eat, code, write. Technical posts and recipes — a place for both.</p>
       <p className="ecw-filter-links">
-        <Link to="/" className={filter === 'all' ? 'ecw-filter-active' : ''}>All</Link>
+        <Link to="/" className={`ecw-filter-all ${filter === 'all' ? 'ecw-filter-active' : ''}`}>All</Link>
         {' · '}
-        <Link to="/code" className={filter === 'blog' ? 'ecw-filter-active' : ''}>Code</Link>
+        <Link to="/code" className={`ecw-filter-code ${filter === 'blog' ? 'ecw-filter-active' : ''}`}>Code</Link>
         {' · '}
-        <Link to="/eat" className={filter === 'recipe' ? 'ecw-filter-active' : ''}>Eat</Link>
+        <Link to="/eat" className={`ecw-filter-eat ${filter === 'recipe' ? 'ecw-filter-active' : ''}`}>Eat</Link>
       </p>
       {loading && <p className="ecw-loading">Loading…</p>}
       {!loading && filtered.length === 0 && <p className="ecw-empty">No entries yet.</p>}
       {!loading && filtered.length > 0 && (
         <ul className="ecw-entry-ul">
           {filtered.map((e) => (
-            <li key={`${e.type}-${e.slug}`} className="ecw-entry-item">
+            <li key={`${e.type}-${e.slug}`} className={`ecw-entry-item ecw-entry-item--${e.type}`}>
               <div className="ecw-entry-head">
                 <Link to={e.href}>{e.title}</Link>
                 <span className="ecw-entry-meta">
