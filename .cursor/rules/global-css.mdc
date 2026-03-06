@@ -1,0 +1,12 @@
+---
+description: Global CSS for the deployed site lives in app/public
+globs: app/public/**/*.css, public/**/*.css
+---
+
+# eatcodewrite-site: global CSS location
+
+The **deployed** global stylesheet is **`app/public/eatcodewrite.css`**. The Vite build (from `app/`) copies `app/public/` into `dist/`; that file is what gets deployed to S3 and served at `/eatcodewrite.css`.
+
+- **Edit only** `app/public/eatcodewrite.css` when changing global styles, theme variables (`--ecw-*`), or dark mode.
+- The repo root **`public/`** folder is copied into `dist/` by `scripts/build-content.js` **before** the Vite build; it does **not** contain `eatcodewrite.css` (to avoid two copies getting out of sync). Do not re-add `eatcodewrite.css` under root `public/`.
+- CI validates that `dist/eatcodewrite.css` contains the theme variables (e.g. `--ecw-code`); if that check fails, the deployed file is wrong and the single source of truth is `app/public/eatcodewrite.css`.

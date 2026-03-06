@@ -41,6 +41,7 @@ jobs:
           test -f dist/index.html
           test -f dist/feed.xml
           test -f dist/eatcodewrite.css
+          grep -q '--ecw-code' dist/eatcodewrite.css || (echo "dist/eatcodewrite.css must define theme variables (--ecw-code, --ecw-eat); edit app/public/eatcodewrite.css" && exit 1)
 
   deploy:
     needs: validate
