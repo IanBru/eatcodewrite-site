@@ -8,6 +8,27 @@
   padding-right: env(safe-area-inset-right);
 }
 
+.ecw-header {
+  padding: clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem) 0;
+  max-width: var(--ecw-measure, 42rem);
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ecw-site-logo-link {
+  display: inline-block;
+  line-height: 0;
+}
+
+.ecw-site-logo {
+  display: block;
+  height: clamp(2rem, 5vw, 2.75rem);
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+}
+
 .ecw-main {
   flex: 1;
   width: 100%;
@@ -164,6 +185,20 @@
 .ecw-entry-meta {
   font-size: 0.875rem;
   color: var(--ecw-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.ecw-entry-type-icon {
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ecw-entry-item--recipe .ecw-entry-type-icon--eat {
+  color: var(--ecw-eat);
 }
 
 .ecw-subscribe {
@@ -197,6 +232,25 @@
   font-weight: 600;
   color: var(--ecw-eat-dark);
   line-height: 1.25;
+}
+
+.ecw-page-type {
+  margin: 0 0 0.5em 0;
+  font-size: 0.875rem;
+  color: var(--ecw-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.ecw-page-type-icon {
+  width: 1.25em;
+  height: 1.25em;
+  object-fit: contain;
+}
+
+.ecw-recipe .ecw-page-type-icon--eat {
+  color: var(--ecw-eat);
 }
 
 .ecw-byline {

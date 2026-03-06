@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LogoEatIcon from './LogoEatIcon';
 
 export type EntryFilter = 'all' | 'blog' | 'recipe';
 
@@ -62,7 +63,12 @@ export default function EntryList() {
                 <div className="ecw-entry-head">
                   <span className="ecw-entry-title">{e.title}</span>
                   <span className="ecw-entry-meta">
-                    {e.type === 'blog' ? 'Code' : 'Eat'}
+                    {e.type === 'blog' ? (
+                      <img src="/Logo-Code.png" alt="" className="ecw-entry-type-icon" width="16" height="16" />
+                    ) : (
+                      <LogoEatIcon className="ecw-entry-type-icon ecw-entry-type-icon--eat" size={16} />
+                    )}
+                    {e.type === 'blog' ? ' Code' : ' Eat'}
                     {e.date ? ` · ${e.date}` : ''}
                   </span>
                 </div>
