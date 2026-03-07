@@ -213,13 +213,14 @@ const feedXml = `<?xml version="1.0" encoding="UTF-8"?>
     <title>Eat Code Write — Code</title>
     <link>${baseUrl}</link>
     <description>Technical blog posts from Eat Code Write</description>
-    <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="${baseUrl}/feed-code.xml" rel="self" type="application/rss+xml"/>
 ${feedItems}
   </channel>
 </rss>`;
-fs.writeFileSync(path.join(distDir, 'feed.xml'), feedXml, 'utf-8');
+fs.writeFileSync(path.join(distDir, 'feed-code.xml'), feedXml, 'utf-8');
+try { fs.unlinkSync(path.join(distDir, 'feed.xml')); } catch {}
 
-// Optional recipes feed
+// Recipes feed
 const recipeFeedItems = recipeList
   .slice(0, 50)
   .map(
@@ -234,11 +235,12 @@ const recipesFeedXml = `<?xml version="1.0" encoding="UTF-8"?>
     <title>Eat Code Write — Eat</title>
     <link>${baseUrl}/recipes</link>
     <description>Recipes from Eat Code Write</description>
-    <atom:link href="${baseUrl}/recipes/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="${baseUrl}/feed-recipes.xml" rel="self" type="application/rss+xml"/>
 ${recipeFeedItems}
   </channel>
 </rss>`;
-fs.writeFileSync(path.join(distRecipesDir, 'feed.xml'), recipesFeedXml, 'utf-8');
+fs.writeFileSync(path.join(distDir, 'feed-recipes.xml'), recipesFeedXml, 'utf-8');
+try { fs.unlinkSync(path.join(distRecipesDir, 'feed.xml')); } catch {}
 
 // Combined feed (code + recipes, both)
 const allItems = [

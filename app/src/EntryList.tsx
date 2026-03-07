@@ -88,8 +88,8 @@ export default function EntryList() {
       )}
       <p className={`ecw-subscribe ecw-subscribe--${filter}`}>
         {filter === 'all' && <a href="/feed-all.xml">Subscribe to feed (code and recipes)</a>}
-        {filter === 'blog' && <a href="/feed.xml">Subscribe to code feed</a>}
-        {filter === 'recipe' && <a href="/recipes/feed.xml">Subscribe to recipes feed</a>}
+        {filter === 'blog' && <a href="/feed-code.xml">Subscribe to code feed</a>}
+        {filter === 'recipe' && <a href="/feed-recipes.xml">Subscribe to recipes feed</a>}
       </p>
     </div>
   );

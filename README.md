@@ -2,8 +2,9 @@
 
 Static site for [eatcodewrite.com](https://www.eatcodewrite.com): technical blog posts (code) and recipes (eat).
 
-- **Blog**: Markdown in `content/blog/` → HTML at build; listed at `/blog`, feed at `/feed.xml`.
-- **Recipes**: Markdown instructions + JSON ingredients in `content/recipes/`; Schema.org-aligned; listed at `/recipes`, optional feed at `/recipes/feed.xml`.
+- **Blog**: Markdown in `content/blog/` → HTML at build; listed at `/blog`, feed at `/feed-code.xml`.
+- **Recipes**: Markdown instructions + JSON ingredients in `content/recipes/`; Schema.org-aligned; listed at `/recipes`, feed at `/feed-recipes.xml`.
+- **Feeds** (all at site root): `/feed-code.xml`, `/feed-recipes.xml`, `/feed-all.xml` (code + recipes combined).
 - **Preview**: Push a branch named `ftr/*` to deploy to `https://www.eatcodewrite.com/preview/<branch-slug>/`; preview is noindexed. Delete the branch to remove the preview.
 
 ## Build

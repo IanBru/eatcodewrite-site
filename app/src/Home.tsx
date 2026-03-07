@@ -15,7 +15,7 @@ export default function Home() {
         </a>
       </section>
       <p className="ecw-subscribe">
-        <a href="/feed.xml">Subscribe to the blog feed</a>
+        <a href="/feed-code.xml">Subscribe to the blog feed</a>
       </p>
     </div>
   );
