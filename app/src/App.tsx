@@ -20,11 +20,13 @@ function Header() {
       <Link to="/" className="ecw-site-logo-link" aria-label="Eat Code Write home">
         <img src={logoSrc} alt="" className="ecw-site-logo" width="160" height="48" />
       </Link>
-      <p className="ecw-brand">
-        Just a place for{' '}
-        <a href="https://copperberry.com/#ian" target="copperberry" rel="noopener noreferrer" className="ecw-brand-link">Ian</a>
-        {' '}to jot down random thoughts about software development — and food!
-      </p>
+      <div className="ecw-brand">
+        <span className="ecw-brand-eat">Eat</span>
+        <span className="ecw-brand-sep">, </span>
+        <span className="ecw-brand-code">Code</span>
+        <span className="ecw-brand-sep">, </span>
+        <span className="ecw-brand-write">Write</span>
+      </div>
     </header>
   );
 }

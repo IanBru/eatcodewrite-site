@@ -44,7 +44,11 @@ export default function EntryList() {
 
   return (
     <div className="ecw-entry-list">
-      <p className="ecw-tagline">Eat, code, write. Technical posts and recipes — a place for both.</p>
+      <p className="ecw-tagline">
+        Just a place for{' '}
+        <a href="https://copperberry.com/#ian" target="copperberry" rel="noopener noreferrer" className="ecw-tagline-link">Ian</a>
+        {' '}to jot down random thoughts about software development — and food!
+      </p>
       <p className="ecw-filter-links">
         <Link to="/" className={`ecw-filter-all ${filter === 'all' ? 'ecw-filter-active' : ''}`}>All</Link>
         {' · '}
