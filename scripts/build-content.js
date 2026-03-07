@@ -238,6 +238,31 @@ ${recipeFeedItems}
 </rss>`;
 fs.writeFileSync(path.join(distRecipesDir, 'feed.xml'), recipesFeedXml, 'utf-8');
 
+// Combined feed (code + recipes, both)
+const allItems = [
+  ...blogPosts.slice(0, 50).map((p) => ({ title: p.title, link: `${baseUrl}/blog/${p.slug}`, date: p.date, excerpt: p.excerpt, author: p.author })),
+  ...recipeList.slice(0, 50).map((r) => ({ title: r.name, link: `${baseUrl}/recipes/${r.slug}`, date: r.date, excerpt: '', author: r.author })),
+];
+allItems.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+const allFeedItems = allItems
+  .slice(0, 50)
+  .map(
+    (i) =>
+      `  <item><title>${escapeXml(i.title)}</title><link>${i.link}</link><guid isPermaLink="true">${i.link}</guid>${i.date ? `<pubDate>${new Date(i.date).toUTCString()}</pubDate>` : ''}${i.author ? `<dc:creator>${escapeXml(i.author)}</dc:creator>` : ''}${i.excerpt ? `<description>${escapeXml(i.excerpt)}</description>` : ''}</item>`
+  )
+  .join('\n');
+const feedAllXml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Eat Code Write</title>
+    <link>${baseUrl}</link>
+    <description>Code and recipes from Eat Code Write</description>
+    <atom:link href="${baseUrl}/feed-all.xml" rel="self" type="application/rss+xml"/>
+${allFeedItems}
+  </channel>
+</rss>`;
+fs.writeFileSync(path.join(distDir, 'feed-all.xml'), feedAllXml, 'utf-8');
+
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')

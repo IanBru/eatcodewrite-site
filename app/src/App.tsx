@@ -20,13 +20,11 @@ function Header() {
       <Link to="/" className="ecw-site-logo-link" aria-label="Eat Code Write home">
         <img src={logoSrc} alt="" className="ecw-site-logo" width="160" height="48" />
       </Link>
-      <div className="ecw-brand">
-        <span className="ecw-brand-eat">Eat</span>
-        <span className="ecw-brand-sep">, </span>
-        <span className="ecw-brand-code">Code</span>
-        <span className="ecw-brand-sep">, </span>
-        <span className="ecw-brand-write">Write</span>
-      </div>
+      <p className="ecw-brand">
+        Just a place for{' '}
+        <a href="https://copperberry.com/#ian" target="copperberry" rel="noopener noreferrer" className="ecw-brand-link">Ian</a>
+        {' '}to jot down random thoughts about software development — and food!
+      </p>
     </header>
   );
 }
@@ -46,7 +44,7 @@ export default function App() {
         </Routes>
       </main>
       <footer className="ecw-footer">
-        <p>Eat Code Write — technical notes and recipes.</p>
+        <p>eatcodewrite is a <a href="https://copperberry.com" target="copperberry" rel="noopener noreferrer" className="ecw-footer-copperberry">copperberry</a> site.</p>
       </footer>
     </div>
   );

@@ -52,22 +52,22 @@
 }
 
 .ecw-brand {
-  margin-left: clamp(0.75rem, 3vw, 1.25rem);
-  font-size: clamp(1rem, 2vw + 0.85rem, 1.25rem);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  margin: 0 0 0 clamp(0.75rem, 3vw, 1.25rem);
+  font-size: clamp(0.8rem, 1.5vw + 0.75rem, 1rem);
+  font-weight: 400;
+  line-height: 1.45;
+  flex: 1;
+  min-width: 0;
 }
 
-.ecw-brand-sep {
-  color: rgba(255, 255, 255, 0.7);
+.ecw-brand-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
-.ecw-header--code .ecw-brand-eat {
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.ecw-header--eat .ecw-brand-code {
-  color: rgba(255, 255, 255, 0.45);
+.ecw-brand-link:hover {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .ecw-main {
@@ -87,6 +87,15 @@
   color: var(--ecw-text-muted, #5a6b5a);
   font-size: 0.9rem;
   border-top: 1px solid var(--ecw-border, #d0ddd0);
+}
+
+.ecw-footer-copperberry {
+  color: var(--ecw-accent);
+  text-decoration: none;
+}
+
+.ecw-footer-copperberry:hover {
+  text-decoration: underline;
 }
 
 /* Tagline — fluid type */
@@ -241,10 +250,10 @@
 
 .ecw-subscribe {
   font-size: 0.95rem;
+  text-align: right;
 }
 
 .ecw-subscribe a {
-  color: var(--ecw-accent);
   text-decoration: none;
   padding: 0.25em 0;
 }
@@ -252,6 +261,10 @@
 .ecw-subscribe a:hover {
   text-decoration: underline;
 }
+
+.ecw-subscribe--all a { color: var(--ecw-text); }
+.ecw-subscribe--code a { color: var(--ecw-code); }
+.ecw-subscribe--eat a { color: var(--ecw-eat); }
 
 /* Blog post & recipe — prose (code = blue, eat = green) */
 .ecw-blog-post h1 {
