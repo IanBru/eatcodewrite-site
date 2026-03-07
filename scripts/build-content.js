@@ -20,6 +20,7 @@ const blogDir = path.join(contentDir, 'blog');
 const recipesDir = path.join(contentDir, 'recipes');
 const distBlogDir = path.join(distDir, 'blog');
 const distRecipesDir = path.join(distDir, 'recipes');
+const baseUrl = process.env.SITE_BASE_URL || 'https://www.eatcodewrite.com';
 
 // Ensure dist and output dirs exist
 function ensureDir(d) {
@@ -125,7 +126,17 @@ if (fs.existsSync(blogDir)) {
     const summaryPath = path.join(blogDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : excerpt;
     const htmlBody = mdToHtml(body);
-    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(title)}</title></head><body><main><h1>${escapeHtml(title)}</h1>${htmlBody}</main></body></html>`;
+    const articleLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: title,
+      datePublished: datePublished || undefined,
+      dateModified: dateUpdated || undefined,
+      author: author ? { '@type': 'Person', name: author } : undefined,
+      url: `${baseUrl}/blog/${slug}`,
+    };
+    const ldScript = jsonLdScript(articleLd);
+    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(title)}</title>${ldScript}</head><body><main><h1>${escapeHtml(title)}</h1>${htmlBody}</main></body></html>`;
     fs.writeFileSync(path.join(distBlogDir, `${slug}.html`), html, 'utf-8');
     blogPosts.push({ slug, title, date: datePublished, datePublished, dateUpdated, author, excerpt, summary });
   }
@@ -141,23 +152,36 @@ if (fs.existsSync(recipesDir)) {
     const slug = path.basename(file, '.md');
     const jsonPath = path.join(recipesDir, `${slug}.recipe.json`);
     if (!fs.existsSync(jsonPath)) continue;
+    const meta = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
     const mdRelPath = path.join('content', 'recipes', file);
     const gitMeta = getGitFileMeta(mdRelPath);
+    const datePublished = meta.datePublished ?? meta.date ?? gitMeta.datePublished ?? '';
+    const dateUpdated = meta.dateModified ?? meta.dateUpdated ?? meta.updated ?? gitMeta.dateUpdated ?? datePublished;
+    const author = meta.author ?? gitMeta.author ?? '';
+    const name = meta.name ?? slug;
     const rawMd = fs.readFileSync(path.join(recipesDir, file), 'utf-8');
     const summaryPath = path.join(recipesDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : '';
     const instructionsHtml = mdToHtml(rawMd);
-    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/></head><body><main>${instructionsHtml}</main></body></html>`;
+    const recipeLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Recipe',
+      name,
+      datePublished: datePublished || undefined,
+      dateModified: dateUpdated || undefined,
+      author: author ? { '@type': 'Person', name: author } : undefined,
+      url: `${baseUrl}/recipes/${slug}`,
+      recipeCategory: meta.recipeCategory || undefined,
+      recipeIngredient: Array.isArray(meta.recipeIngredient) ? meta.recipeIngredient : undefined,
+    };
+    const ldScript = jsonLdScript(recipeLd);
+    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(name)}</title>${ldScript}</head><body><main>${instructionsHtml}</main></body></html>`;
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.html`), html, 'utf-8');
-    const meta = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-    const datePublished = meta.datePublished ?? meta.date ?? gitMeta.datePublished ?? '';
-    const dateUpdated = meta.dateModified ?? meta.dateUpdated ?? meta.updated ?? gitMeta.dateUpdated ?? datePublished;
-    const author = meta.author ?? gitMeta.author ?? '';
     const distMeta = { ...meta, datePublished, dateUpdated, author };
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.recipe.json`), JSON.stringify(distMeta, null, 2), 'utf-8');
     recipeList.push({
       slug,
-      name: meta.name ?? slug,
+      name,
       recipeCategory: meta.recipeCategory,
       date: datePublished,
       datePublished,
@@ -198,7 +222,6 @@ entries.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 fs.writeFileSync(path.join(distDir, 'entries.json'), JSON.stringify(entries), 'utf-8');
 
 // RSS blog feed
-const baseUrl = process.env.SITE_BASE_URL || 'https://www.eatcodewrite.com';
 const feedItems = blogPosts
   .slice(0, 50)
   .map(
@@ -268,12 +291,46 @@ ${allFeedItems}
 </rss>`;
 fs.writeFileSync(path.join(distDir, 'feed-all.xml'), feedAllXml, 'utf-8');
 
+// Sitemap: all public URLs with optional lastmod
+const sitemapUrls = [
+  { loc: baseUrl + '/', lastmod: entries.length ? (entries[0].dateUpdated || entries[0].date) : null },
+  ...blogPosts.map((p) => ({ loc: `${baseUrl}/blog/${p.slug}`, lastmod: p.dateUpdated || p.date })),
+  ...recipeList.map((r) => ({ loc: `${baseUrl}/recipes/${r.slug}`, lastmod: r.dateUpdated || r.date })),
+];
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls
+  .map(
+    (u) =>
+      `  <url><loc>${escapeXml(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod.split('T')[0]}</lastmod>` : ''}</url>`
+  )
+  .join('\n')}
+</urlset>`;
+fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml, 'utf-8');
+
+// JSON index for AIs: url, title, description, type, date, summary
+const indexForBots = entries.map((e) => ({
+  url: baseUrl + e.href,
+  title: e.title,
+  description: e.summary || undefined,
+  type: e.type,
+  date: e.date || undefined,
+  summary: e.summary || undefined,
+}));
+fs.writeFileSync(path.join(distDir, 'index.json'), JSON.stringify(indexForBots, null, 2), 'utf-8');
+
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// Safe for in-HTML script: escape </script> so it doesn't close the tag
+function jsonLdScript(obj) {
+  const json = JSON.stringify(obj);
+  return '<script type="application/ld+json">' + json.replace(/<\/script>/gi, '<\\/script>') + '</script>';
 }
 
 function escapeXml(s) {

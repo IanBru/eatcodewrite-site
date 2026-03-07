@@ -42,6 +42,8 @@ jobs:
           test -f dist/feed-code.xml
           test -f dist/feed-recipes.xml
           test -f dist/feed-all.xml
+          test -f dist/sitemap.xml
+          test -f dist/index.json
           test -f dist/eatcodewrite.css
           grep -q -- '--ecw-code' dist/eatcodewrite.css || (echo "dist/eatcodewrite.css must define theme variables (--ecw-code, --ecw-eat); edit app/public/eatcodewrite.css" && exit 1)
       - name: System tests
