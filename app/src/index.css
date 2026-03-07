@@ -46,6 +46,11 @@
   object-fit: contain;
 }
 
+/* Invert logos on dark header so black→white, grey→dark and they read correctly */
+.ecw-header .ecw-site-logo {
+  filter: invert(1);
+}
+
 .ecw-brand {
   margin-left: clamp(0.75rem, 3vw, 1.25rem);
   font-size: clamp(1rem, 2vw + 0.85rem, 1.25rem);
