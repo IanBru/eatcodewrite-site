@@ -1,0 +1,49 @@
+# Run build and system tests on PRs and pushes (so main and branches are tested).
+name: Test
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'app/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app/package.json'
+      - 'app/package-lock.json'
+      - '.github/workflows/test.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/**'
+      - 'app/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app/package.json'
+      - 'app/package-lock.json'
+      - '.github/workflows/test.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install and build
+        run: |
+          npm ci
+          cd app && npm ci && cd ..
+          npm run build
+
+      - name: System tests
+        run: npm run test:system
