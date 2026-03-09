@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Generate summary markdown files for entries that don't have one.
- * Uses AWS Bedrock (Titan Text Express v1) via OIDC credentials in CI; only writes
+ * Uses AWS Bedrock (Titan Text G1 Large) via OIDC credentials in CI; only writes
  * <slug>.summary.md when missing. Persist summaries in repo so we don't re-summarize.
  */
 
@@ -17,7 +17,7 @@ const blogDir = path.join(contentDir, 'blog');
 const recipesDir = path.join(contentDir, 'recipes');
 
 const region = process.env.AWS_REGION || 'eu-west-1';
-const modelId = process.env.BEDROCK_SUMMARY_MODEL_ID || 'amazon.titan-text-express-v1';
+const modelId = process.env.BEDROCK_SUMMARY_MODEL_ID || 'amazon.titan-tg1-large';
 
 function parseFrontMatter(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
