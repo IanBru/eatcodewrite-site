@@ -1,5 +1,6 @@
 ---
 title: Writing software in the AI age
+date: 2025-03-07
 ---
 
 I've been writing code for forty years. I've been using Cursor for two weeks. I think there's a reasonable chance I'll never write another line of code directly.
