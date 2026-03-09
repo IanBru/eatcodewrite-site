@@ -1,3 +1,7 @@
+---
+title: Writing software in the AI age
+---
+
 I've been writing code for forty years. I've been using Cursor for two weeks. I think there's a reasonable chance I'll never write another line of code directly.
 
 I'm producing software at least 3-4 times faster than I used to. And it's only going to get better.
