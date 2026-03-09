@@ -32,7 +32,7 @@ async function summarizeWithBedrock(content, type) {
   const command = new ConverseCommand({
     modelId,
     messages: [{ role: 'user', content: [{ text: prompt }] }],
-    inferenceConfig: { maxTokens: 150, temperature: 0.3, topP: 0.9 },
+    inferenceConfig: { maxTokens: 150, temperature: 0.3 },
   });
   const response = await client.send(command);
   const textBlock = response.output?.message?.content?.[0];
