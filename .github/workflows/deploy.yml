@@ -93,8 +93,13 @@ jobs:
       - name: Sync to S3
         run: |
           aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}/" \
-            --delete \
             --cache-control "public, max-age=3600"
+          # Remove stale production objects only (never touch preview/)
+          aws s3 ls "s3://${{ secrets.S3_BUCKET }}/" --recursive | awk '{print $4}' | grep -v '^preview/' | sort > current.txt
+          find dist -type f | sed 's|^dist/||' | sort > expected.txt
+          comm -23 current.txt expected.txt | while read -r key; do
+            aws s3 rm "s3://${{ secrets.S3_BUCKET }}/$key" || true
+          done
           # Shorter cache for list data so updates appear without waiting for full invalidation
           aws s3 cp "s3://${{ secrets.S3_BUCKET }}/entries.json" "s3://${{ secrets.S3_BUCKET }}/entries.json" \
             --metadata-directive REPLACE --cache-control "public, max-age=60" \
