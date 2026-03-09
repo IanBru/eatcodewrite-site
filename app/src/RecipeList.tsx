@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const base = import.meta.env.BASE_URL || '/';
+
 interface RecipeMeta {
   slug: string;
   name: string;
@@ -12,7 +14,7 @@ export default function RecipeList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/recipes/index.json')
+    fetch(`${base}recipes/index.json`)
       .then((r) => (r.ok ? r.json() : []))
       .then((data: RecipeMeta[]) => {
         setRecipes(Array.isArray(data) ? data : []);

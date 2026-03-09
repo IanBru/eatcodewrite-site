@@ -22,6 +22,8 @@ function formatDate(iso: string): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+const base = import.meta.env.BASE_URL || '/';
+
 export default function RecipePage() {
   const { slug } = useParams<{ slug: string }>();
   const [recipe, setRecipe] = useState<RecipeData | null>(null);
@@ -31,8 +33,8 @@ export default function RecipePage() {
   useEffect(() => {
     if (!slug) return;
     Promise.all([
-      fetch(`/recipes/${slug}.recipe.json`).then((r) => (r.ok ? r.json() : null)),
-      fetch(`/recipes/${slug}.html`).then((r) => (r.ok ? r.text() : '')),
+      fetch(`${base}recipes/${slug}.recipe.json`).then((r) => (r.ok ? r.json() : null)),
+      fetch(`${base}recipes/${slug}.html`).then((r) => (r.ok ? r.text() : '')),
     ])
       .then(([data, html]) => {
         setRecipe(data ?? null);

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const base = import.meta.env.BASE_URL || '/';
+
 interface PostMeta {
   slug: string;
   title: string;
@@ -13,7 +15,7 @@ export default function BlogList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/blog/index.json')
+    fetch(`${base}blog/index.json`)
       .then((r) => (r.ok ? r.json() : []))
       .then((data: PostMeta[]) => {
         setPosts(Array.isArray(data) ? data : []);

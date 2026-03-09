@@ -16,6 +16,8 @@ function formatDate(iso: string): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+const base = import.meta.env.BASE_URL || '/';
+
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const [html, setHtml] = useState<string>('');
@@ -26,8 +28,8 @@ export default function BlogPost() {
   useEffect(() => {
     if (!slug) return;
     Promise.all([
-      fetch(`/blog/${slug}.html`).then((r) => (r.ok ? r.text() : '')),
-      fetch('/blog/index.json').then((r) => (r.ok ? r.json() : [])),
+      fetch(`${base}blog/${slug}.html`).then((r) => (r.ok ? r.text() : '')),
+      fetch(`${base}blog/index.json`).then((r) => (r.ok ? r.json() : [])),
     ])
       .then(([text, index]: [string, BlogMeta[]]) => {
         const entry = Array.isArray(index) ? index.find((p) => p.slug === slug) : null;
