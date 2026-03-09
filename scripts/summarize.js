@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
  * Generate summary markdown files for entries that don't have one.
- * Uses AWS Bedrock (Titan Text Premier v1) via OIDC credentials in CI; only writes
+ * Uses AWS Bedrock Converse API (Claude Haiku) via OIDC credentials in CI; only writes
  * <slug>.summary.md when missing. Persist summaries in repo so we don't re-summarize.
  */
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
+import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
@@ -17,7 +17,8 @@ const blogDir = path.join(contentDir, 'blog');
 const recipesDir = path.join(contentDir, 'recipes');
 
 const region = process.env.AWS_REGION || 'eu-west-1';
-const modelId = process.env.BEDROCK_SUMMARY_MODEL_ID || 'amazon.titan-text-premier-v1:0';
+// Same Haiku inference profile as control-plane (known to work)
+const modelId = process.env.BEDROCK_SUMMARY_MODEL_ID || 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 function parseFrontMatter(content) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -28,22 +29,14 @@ function parseFrontMatter(content) {
 async function summarizeWithBedrock(content, type) {
   const prompt = `Summarize the following ${type} in 1–2 sentences for a listing page. Be concise and descriptive. Reply with only the summary, no quotes or prefix.\n\n${content.slice(0, 4000)}`;
   const client = new BedrockRuntimeClient({ region });
-  const command = new InvokeModelCommand({
+  const command = new ConverseCommand({
     modelId,
-    contentType: 'application/json',
-    accept: 'application/json',
-    body: JSON.stringify({
-      inputText: prompt,
-      textGenerationConfig: {
-        maxTokenCount: 150,
-        temperature: 0.3,
-        topP: 0.9,
-      },
-    }),
+    messages: [{ role: 'user', content: [{ text: prompt }] }],
+    inferenceConfig: { maxTokens: 150, temperature: 0.3, topP: 0.9 },
   });
   const response = await client.send(command);
-  const body = JSON.parse(new TextDecoder().decode(response.body));
-  const text = body.results?.[0]?.outputText?.trim() ?? '';
+  const textBlock = response.output?.message?.content?.[0];
+  const text = (textBlock?.text ?? '').trim();
   return text;
 }
 
