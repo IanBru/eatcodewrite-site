@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+const base = import.meta.env.BASE_URL;
+
 export type EntryFilter = 'all' | 'blog' | 'recipe';
 
 interface Entry {
@@ -33,7 +35,7 @@ export default function EntryList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/entries.json')
+    fetch(base + 'entries.json')
       .then((r) => (r.ok ? r.json() : []))
       .then((data: Entry[]) => setEntries(Array.isArray(data) ? data : []))
       .catch(() => setEntries([]))
@@ -67,9 +69,9 @@ export default function EntryList() {
                   <span className="ecw-entry-title">{e.title}</span>
                   <span className="ecw-entry-meta">
                     {e.type === 'blog' ? (
-                      <img src="/Logo-Code.png" alt="" className="ecw-entry-type-icon" width="16" height="16" />
+                      <img src={base + 'Logo-Code.png'} alt="" className="ecw-entry-type-icon" width="16" height="16" />
                     ) : (
-                      <img src="/Logo-Eat.png" alt="" className="ecw-entry-type-icon" width="16" height="16" />
+                      <img src={base + 'Logo-Eat.png'} alt="" className="ecw-entry-type-icon" width="16" height="16" />
                     )}
                     {e.type === 'blog' ? ' Code' : ' Eat'}
                     {e.date ? ` · ${e.date}` : ''}
@@ -87,9 +89,9 @@ export default function EntryList() {
         </ul>
       )}
       <p className={`ecw-subscribe ecw-subscribe--${filter}`}>
-        {filter === 'all' && <a href="/feed-all.xml">Subscribe to feed (code and recipes)</a>}
-        {filter === 'blog' && <a href="/feed-code.xml">Subscribe to code feed</a>}
-        {filter === 'recipe' && <a href="/feed-recipes.xml">Subscribe to recipes feed</a>}
+        {filter === 'all' && <a href={base + 'feed-all.xml'}>Subscribe to feed (code and recipes)</a>}
+        {filter === 'blog' && <a href={base + 'feed-code.xml'}>Subscribe to code feed</a>}
+        {filter === 'recipe' && <a href={base + 'feed-recipes.xml'}>Subscribe to recipes feed</a>}
       </p>
     </div>
   );
