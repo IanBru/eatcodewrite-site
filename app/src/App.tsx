@@ -1,4 +1,4 @@
-import { Link, Routes, Route, useLocation } from 'react-router-dom';
+import { Link, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import EntryList from './EntryList';
 import BlogPost from './BlogPost';
 import RecipePage from './RecipePage';
@@ -40,6 +40,7 @@ export default function App() {
       <main className="ecw-main">
         <Routes>
           <Route path="/" element={<EntryList />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />
           <Route path="/code" element={<EntryList />} />
           <Route path="/eat" element={<EntryList />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
