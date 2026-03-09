@@ -144,6 +144,56 @@ if (fs.existsSync(blogDir)) {
 blogPosts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 fs.writeFileSync(path.join(distBlogDir, 'index.json'), JSON.stringify(blogPosts), 'utf-8');
 
+// Format a single ingredient as "amount - item - (optional purpose)"
+function formatIngredient(i) {
+  if (!i || typeof i !== 'object') return (i && (i.item || i)).toString();
+  const item = (i.item || '').trim();
+  const amount = (i.amount || '').trim();
+  const purpose = (i.purpose || '').trim();
+  const parts = [];
+  if (amount) parts.push(amount);
+  if (item) parts.push(item);
+  if (purpose) parts.push(`(${purpose})`);
+  return parts.join(' - ');
+}
+
+// Normalize recipe meta so site format (Schema.org/camelCase) and AI format (snake_case, ingredients[]) both work
+function normalizeRecipeMeta(meta, gitMeta) {
+  const datePublished = meta.datePublished ?? meta.date ?? gitMeta?.datePublished ?? '';
+  const dateUpdated = meta.dateModified ?? meta.dateUpdated ?? meta.updated ?? gitMeta?.dateUpdated ?? datePublished;
+  const author = meta.author ?? gitMeta?.author ?? '';
+  const recipeIngredient = Array.isArray(meta.recipeIngredient)
+    ? meta.recipeIngredient
+    : Array.isArray(meta.ingredients)
+      ? meta.ingredients.map(formatIngredient)
+      : [];
+  return {
+    name: meta.name,
+    datePublished,
+    dateUpdated,
+    author,
+    recipeIngredient,
+    recipeYield: meta.recipeYield ?? meta.yield,
+    prepTime: meta.prepTime ?? meta.prep_time,
+    cookTime: meta.cookTime ?? meta.cook_time,
+    totalTime: meta.totalTime ?? meta.total_time,
+    recipeCategory: meta.recipeCategory,
+    recipeCuisine: meta.recipeCuisine,
+    instructions: meta.instructions,
+  };
+}
+
+// Build instructions HTML from markdown or from meta.instructions (AI format: [{ step, instruction }])
+function recipeInstructionsHtml(rawMd, normalizedMeta) {
+  if (Array.isArray(normalizedMeta.instructions) && normalizedMeta.instructions.length > 0) {
+    const steps = normalizedMeta.instructions
+      .map((s) => `<li>${escapeHtml((s.instruction ?? s.text ?? '').trim())}</li>`)
+      .join('\n');
+    return `<ol>${steps}</ol>`;
+  }
+  return mdToHtml(rawMd);
+}
+
 // Recipes: content/recipes/<slug>.md + <slug>.recipe.json → dist/recipes/<slug>.html and copy JSON (exclude *.summary.md)
 const recipeList = [];
 if (fs.existsSync(recipesDir)) {
@@ -155,38 +205,48 @@ if (fs.existsSync(recipesDir)) {
     const meta = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
     const mdRelPath = path.join('content', 'recipes', file);
     const gitMeta = getGitFileMeta(mdRelPath);
-    const datePublished = meta.datePublished ?? meta.date ?? gitMeta.datePublished ?? '';
-    const dateUpdated = meta.dateModified ?? meta.dateUpdated ?? meta.updated ?? gitMeta.dateUpdated ?? datePublished;
-    const author = meta.author ?? gitMeta.author ?? '';
-    const name = meta.name ?? slug;
+    const norm = normalizeRecipeMeta(meta, gitMeta);
+    const name = norm.name ?? slug;
     const rawMd = fs.readFileSync(path.join(recipesDir, file), 'utf-8');
     const summaryPath = path.join(recipesDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : '';
-    const instructionsHtml = mdToHtml(rawMd);
+    const instructionsHtml = recipeInstructionsHtml(rawMd, norm);
     const recipeLd = {
       '@context': 'https://schema.org',
       '@type': 'Recipe',
       name,
-      datePublished: datePublished || undefined,
-      dateModified: dateUpdated || undefined,
-      author: author ? { '@type': 'Person', name: author } : undefined,
+      datePublished: norm.datePublished || undefined,
+      dateModified: norm.dateUpdated || undefined,
+      author: norm.author ? { '@type': 'Person', name: norm.author } : undefined,
       url: `${baseUrl}/recipes/${slug}`,
-      recipeCategory: meta.recipeCategory || undefined,
-      recipeIngredient: Array.isArray(meta.recipeIngredient) ? meta.recipeIngredient : undefined,
+      recipeCategory: norm.recipeCategory || undefined,
+      recipeIngredient: norm.recipeIngredient.length ? norm.recipeIngredient : undefined,
     };
     const ldScript = jsonLdScript(recipeLd);
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(name)}</title>${ldScript}</head><body><main>${instructionsHtml}</main></body></html>`;
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.html`), html, 'utf-8');
-    const distMeta = { ...meta, datePublished, dateUpdated, author };
+    const distMeta = {
+      name,
+      datePublished: norm.datePublished,
+      dateUpdated: norm.dateUpdated,
+      author: norm.author,
+      recipeIngredient: norm.recipeIngredient,
+      recipeYield: norm.recipeYield,
+      prepTime: norm.prepTime,
+      cookTime: norm.cookTime,
+      totalTime: norm.totalTime,
+      recipeCategory: norm.recipeCategory,
+      recipeCuisine: norm.recipeCuisine,
+    };
     fs.writeFileSync(path.join(distRecipesDir, `${slug}.recipe.json`), JSON.stringify(distMeta, null, 2), 'utf-8');
     recipeList.push({
       slug,
       name,
-      recipeCategory: meta.recipeCategory,
-      date: datePublished,
-      datePublished,
-      dateUpdated,
-      author,
+      recipeCategory: norm.recipeCategory,
+      date: norm.datePublished,
+      datePublished: norm.datePublished,
+      dateUpdated: norm.dateUpdated,
+      author: norm.author,
       summary,
     });
   }

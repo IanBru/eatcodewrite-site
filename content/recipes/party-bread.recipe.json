@@ -1,5 +1,6 @@
 {
   "name": "Focaccia (Party Bread)",
+  "datePublished": "2025-03-07",
   "prep_time": "20 minutes",
   "rise_time": "overnight + 5 hours",
   "cook_time": "25 minutes",
@@ -27,7 +28,7 @@
     },
     {
       "item": "Olive oil",
-      "amount": "for coating and finishing"
+      "purpose": "for coating and finishing"
     }
   ],
   "instructions": [
