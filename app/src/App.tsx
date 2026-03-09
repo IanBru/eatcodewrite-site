@@ -10,10 +10,12 @@ function pageTypeFromPath(pathname: string): 'all' | 'code' | 'eat' {
   return 'all';
 }
 
+const base = import.meta.env.BASE_URL;
+
 function Header() {
   const { pathname } = useLocation();
   const pageType = pageTypeFromPath(pathname);
-  const logoSrc = pageType === 'code' ? '/Logo-Code.png' : pageType === 'eat' ? '/Logo-Eat.png' : '/Logo.png';
+  const logoSrc = base + (pageType === 'code' ? 'Logo-Code.png' : pageType === 'eat' ? 'Logo-Eat.png' : 'Logo.png');
 
   return (
     <header className={`ecw-header ecw-header--${pageType}`}>
