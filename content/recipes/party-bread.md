@@ -1,0 +1,1 @@
+A classic Italian focaccia—tender, oily, and perfect for sharing. The long, cool overnight rise develops flavour, while the high heat gives you that gorgeous golden crust.
