@@ -108,6 +108,15 @@ function mdToHtml(md) {
     .join('\n');
 }
 
+/** Add target="_blank" and rel="noopener noreferrer" to external links in HTML. */
+function addExternalLinkTargets(html) {
+  return html.replace(/<a\s+([^>]+)>/g, (m, attrs) => {
+    if (!/href=["']https?:\/\//i.test(attrs)) return m;
+    if (/target\s*=/i.test(attrs)) return m;
+    return `<a ${attrs} target="_blank" rel="noopener noreferrer">`;
+  });
+}
+
 // Blog: content/blog/*.md → dist/blog/<slug>.html + index.json (exclude *.summary.md)
 const blogPosts = [];
 if (fs.existsSync(blogDir)) {
@@ -125,7 +134,7 @@ if (fs.existsSync(blogDir)) {
     const excerpt = front.excerpt ?? '';
     const summaryPath = path.join(blogDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : excerpt;
-    const htmlBody = mdToHtml(body);
+    const htmlBody = addExternalLinkTargets(mdToHtml(body));
     const articleLd = {
       '@context': 'https://schema.org',
       '@type': 'Article',
@@ -191,7 +200,7 @@ function recipeInstructionsHtml(rawMd, normalizedMeta) {
       .join('\n');
     return `<ol>${steps}</ol>`;
   }
-  return mdToHtml(rawMd);
+  return addExternalLinkTargets(mdToHtml(rawMd));
 }
 
 // Recipes: content/recipes/<slug>.md + <slug>.recipe.json → dist/recipes/<slug>.html and copy JSON (exclude *.summary.md)
