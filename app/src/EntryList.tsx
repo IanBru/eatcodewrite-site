@@ -49,7 +49,7 @@ export default function EntryList() {
       <p className="ecw-tagline">
         Just a place for{' '}
         <a href="https://copperberry.com/#ian" target="copperberry" rel="noopener noreferrer" className="ecw-tagline-link">Ian</a>
-        {' '}to jot down random thoughts about software development — and food!
+        {' '}to jot down random thoughts about software development, with the odd recipe throw in.
       </p>
       <p className="ecw-filter-links">
         <Link to="/" className={`ecw-filter-all ${filter === 'all' ? 'ecw-filter-active' : ''}`}>All</Link>
