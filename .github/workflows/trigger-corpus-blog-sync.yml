@@ -1,0 +1,21 @@
+# When blog content is merged to main, trigger ian-corpus to sync blogs.
+# Only runs when content/blog/** changes (not recipes, code, or other paths).
+# Uses IAN_CORPUS_TRIGGER_TOKEN (fine-grained PAT: ian-corpus, Actions: write only).
+name: Trigger corpus blog sync
+
+on:
+  push:
+    branches: [main]
+    paths: ["content/blog/**"]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger ian-corpus sync workflow
+        run: |
+          curl -sS -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.IAN_CORPUS_TRIGGER_TOKEN }}" \
+            "https://api.github.com/repos/IanBru/ian-corpus/actions/workflows/sync-eatcodewrite-blogs.yml/dispatches" \
+            -d '{"ref":"main"}'
