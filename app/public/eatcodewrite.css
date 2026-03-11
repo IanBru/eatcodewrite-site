@@ -16,6 +16,7 @@
   --ecw-accent: #2d6b5c;
   --ecw-accent-dark: #1e453c;
   --ecw-bg: #f8faf9;
+  --ecw-bg-soft: rgba(0, 0, 0, 0.06);
   --ecw-border: #dce8e4;
   --ecw-measure: min(42rem, 90vw);
   --ecw-tap: 44px;
@@ -39,6 +40,7 @@
     --ecw-accent: #5ab09a;
     --ecw-accent-dark: #7dc4b0;
     --ecw-bg: #1a1e1c;
+    --ecw-bg-soft: rgba(255, 255, 255, 0.08);
     --ecw-border: #2d3432;
   }
 }
@@ -62,30 +64,38 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
-/* Share links at bottom of blog/recipe */
+/* Share links at bottom of blog/recipe – right-aligned, icon-only */
 .ecw-share-links {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid var(--ecw-border);
   font-size: 0.9375rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 .ecw-share-label {
   color: var(--ecw-text-muted);
-  margin-right: 0.5rem;
+  margin-right: 0.25rem;
 }
-.ecw-share-link,
+.ecw-share-icon,
 .ecw-share-copy {
-  margin-right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   background: none;
   border: none;
-  font: inherit;
+  padding: 0.35rem;
   cursor: pointer;
-  padding: 0;
+  border-radius: 4px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
 }
-.ecw-share-link--code {
+.ecw-share-icon--code {
   color: var(--ecw-code);
 }
-.ecw-share-link--eat {
+.ecw-share-icon--eat {
   color: var(--ecw-eat);
 }
 .ecw-blog-post .ecw-share-links .ecw-share-copy {
@@ -94,9 +104,14 @@ h1, h2, h3, h4, h5, h6 {
 .ecw-recipe .ecw-share-links .ecw-share-copy {
   color: var(--ecw-eat);
 }
-.ecw-share-link:hover,
-.ecw-share-link:focus-visible,
+.ecw-share-icon:hover,
+.ecw-share-icon:focus-visible,
 .ecw-share-copy:hover,
 .ecw-share-copy:focus-visible {
-  text-decoration: underline;
+  opacity: 0.85;
+  background-color: var(--ecw-bg-soft);
+}
+.ecw-share-copy-feedback {
+  font-size: 0.75rem;
+  font-weight: 500;
 }
