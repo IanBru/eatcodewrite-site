@@ -3,7 +3,7 @@ title: Writing software in the AI age
 date: 2025-03-10
 ---
 
-I've been writing code for forty years, first as a hobby and then for money. This makes me a fogey by software standards. 
+I've been writing code for forty years, first as a hobby and then for money. This makes me something of a fogey by software standards. 
 
 I've been using [Cursor](https://cursor.com) for two weeks. I think there's a reasonable chance I'll never hand write another line of code.
 
