@@ -61,3 +61,42 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ecw-accent-dark);
   font-weight: 600;
 }
+
+/* Share links at bottom of blog/recipe */
+.ecw-share-links {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ecw-border);
+  font-size: 0.9375rem;
+}
+.ecw-share-label {
+  color: var(--ecw-text-muted);
+  margin-right: 0.5rem;
+}
+.ecw-share-link,
+.ecw-share-copy {
+  margin-right: 0.75rem;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.ecw-share-link--code {
+  color: var(--ecw-code);
+}
+.ecw-share-link--eat {
+  color: var(--ecw-eat);
+}
+.ecw-blog-post .ecw-share-links .ecw-share-copy {
+  color: var(--ecw-code);
+}
+.ecw-recipe .ecw-share-links .ecw-share-copy {
+  color: var(--ecw-eat);
+}
+.ecw-share-link:hover,
+.ecw-share-link:focus-visible,
+.ecw-share-copy:hover,
+.ecw-share-copy:focus-visible {
+  text-decoration: underline;
+}

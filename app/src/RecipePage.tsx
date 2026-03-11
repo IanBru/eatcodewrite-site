@@ -1,5 +1,6 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import ShareLinks from './ShareLinks';
 
 interface RecipeData {
   name: string;
@@ -26,6 +27,7 @@ const base = import.meta.env.BASE_URL || '/';
 
 export default function RecipePage() {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
   const [recipe, setRecipe] = useState<RecipeData | null>(null);
   const [instructionsHtml, setInstructionsHtml] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -103,6 +105,11 @@ export default function RecipePage() {
           <div className="ecw-prose" dangerouslySetInnerHTML={{ __html: instructionsHtml }} />
         </section>
       )}
+      <ShareLinks
+        url={typeof window !== 'undefined' ? window.location.origin + location.pathname : ''}
+        title={recipe.name}
+        type="recipe"
+      />
     </article>
   );
 }
