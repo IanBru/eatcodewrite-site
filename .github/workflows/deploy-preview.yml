@@ -2,6 +2,9 @@
 # Preview is synced to s3://bucket/preview/<branch-slug>/ and must not be indexed.
 name: Deploy preview
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 # Runs when pushing to any branch whose name starts with ftr/ (e.g. ftr/blog-my-post or ftr/preview-xxx).
 # Branch slug becomes the preview path: /preview/<branch-slug>/
 on:

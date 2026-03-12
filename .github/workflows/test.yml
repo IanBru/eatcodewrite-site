@@ -1,6 +1,9 @@
 # Run build and system tests on PRs and pushes (so main and branches are tested).
 name: Test
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   pull_request:
     paths:

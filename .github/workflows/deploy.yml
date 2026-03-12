@@ -1,6 +1,9 @@
 # Deploy to S3 when content is merged to main.
 name: Deploy to S3
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   workflow_dispatch:
   push:
