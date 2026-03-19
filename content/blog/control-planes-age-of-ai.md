@@ -7,7 +7,7 @@ Control planes are the dirty secret of enterprise development.
 
 We need them everywhere. Your customer service agent needs one to issue a refund or process a support request. Your pricing team needs one to control how much you sell things for. Your finance team needs one to manage stock levels. The list goes on.
 
-All of these control planes currently have user interfaces-built for internal staff to use. And here's the problem: for the "dark matter" developers building them, control planes are painful. Often a back end engineer is maintaining a front end system, so they're already outside of their comfort zone. Every user wants a small modification. But no organization wants to assign high-end UX engineers to design a control plane, because there really aren't that many users and the work simply isn't that interesting. 
+All of these control planes currently have user interfaces built for internal staff to use. And here's the problem: for the "dark matter" developers building them, control planes are painful. Often a back end engineer is maintaining a front end system, so they're already outside of their comfort zone. Every user wants a small modification. But no organization wants to assign high-end UX engineers to design a control plane, because there really aren't that many users and the work simply isn't that interesting. 
 
 The result can be a sprawl of mediocre, hard-to-maintain user interfaces that nobody loves, especially those forced to use them.
 
@@ -37,7 +37,7 @@ It might start with "Build a control plane for my API using React and SSO authen
 
 This feels feasible, but right now requires a high level of investment. Properly implemented, it could give tremendous control over how control planes work. You avoid the ongoing maintenance burden of hand-building and redeploying new systems. However, it mandates a high standard of automated software development practice: building fully functional code from prompts, automated testing, CI/CD, and proper API design. I believe larger enterprises might consider this, but right now it could be out of reach for smaller teams.
 
-I believe that it's more likely in the short term that this will be used in "semi-automatic" mode. An engineer or product professional will run Cursor or similar tools to generate the front-end UX and tweak it, rather than it being automatically built end to end. That approach will work, but carries some risk and cost - you still need a skilled professional involved - and some may not understand the code they are responsible for.
+I seems more likely in the short term that this strategy will be used in "semi-automatic" mode. An engineer or product professional will run Cursor or similar tools to generate the front-end UX and tweak it, rather than it being automatically built end to end.  Many organizations already do this. That approach will work, but carries some risk and cost - you still need a skilled professional involved, and some may not understand the code for which they are now responsible.
 
 ### Option 3: Control via Server-Side Agentic Agents
 
@@ -51,7 +51,7 @@ It's not perfect, but it's the architecture that balances security, maintainabil
 
 Don't start by throwing away your existing control planes.
 
-Your legacy control planes encode valuable business logic and governance that you probably don't have documented anywhere else. Every confirmation dialog, validation rule, state machine, and role-based restriction exists for a reason. These aren't arbitrary UX choices-they're business rules that have evolved to protect your company, enforce compliance, and manage risk.
+Your legacy control planes encode valuable business logic and governance that you probably don't have documented anywhere else. Every confirmation dialog, validation rule, state machine, and role-based restriction exists for a reason. These aren't arbitrary UX choices - they're business rules that have evolved to protect your company, enforce compliance, and manage risk.
 
 When you transition to agentic control planes, you need to preserve that logic. The patterns translate:
 
@@ -69,4 +69,14 @@ Before you build your next control plane-especially if you're moving to an agent
 
 For many organizations, the transition won't be overnight. Legacy control planes won't disappear. But as you build new ones, or significantly refactor existing ones, you'll need to make a choice about which of these three paths you're taking.
 
-The key is to choose deliberately-and to understand the security, maintenance, and UX implications of each option. And crucially: to learn from what came before. Control planes are invisible to your customers, but they're absolutely critical to your business. They deserve better than accidental architecture.
+### How to choose today
+
+If you're deciding what to do right now, use this quick filter:
+
+- **Choose Desktop AI** when speed matters most and blast radius is low. Ship a few MCPs but limit their capabilities.
+- **Choose Option 2 (automatic generation)** if your API and delivery discipline are already mature and you don't want to retrain your users to use AI.
+- **Choose Option 3 (server-side agentic)** if you're shipping a new control plane or replacing an existing one and you need good governance.
+
+And regardless of option: start with one high-friction workflow, measure cycle-time and failure modes, and expand from there.  Observation and feedback are vital.
+
+The key is to choose deliberately and to understand the security, maintenance, and UX implications of each option. And crucially: to learn from what came before. Control planes are invisible to your customers, but they're absolutely critical to your business. They deserve better than accidental architecture.
