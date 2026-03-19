@@ -1,0 +1,1 @@
+AI changes how enterprise control planes should be built: desktop, automatically generated, or server-side agentic. The best path balances security and governance, and you should mine and preserve the legacy business rules rather than starting from scratch.
