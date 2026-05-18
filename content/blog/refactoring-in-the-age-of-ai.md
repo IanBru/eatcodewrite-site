@@ -33,7 +33,7 @@ As I've [written before](https://www.eatcodewrite.com/blog/writing-software-in-t
 
 * Blindly applying design patterns, obscuring business logic
 * Ignoring the overall design framework to solve short term goals 
-  * We all do this - but there's a skill in knowing when to choose a "tactical fix" over  a strategic refactor
+  * We all do this - but there's a skill in knowing when to choose a "tactical fix" over a strategic refactor
 * Poor cohesion, with a single feature implemented across a wide code base
 * Organising code around software concepts rather than business concepts
 
@@ -49,7 +49,7 @@ The answer is typically along the lines of
 
 ## Use services of the right size
 
-Once your component - let's say it's a deployable artifact such as a function,  container, or module - goes beyond the size of your context window, it's going to become progressively more expensive to refactor, generate or maintain using LLM. This stacks - each request to the LLM requires a larger context so every time you attempt a task, you burn more tokens.
+Once your component - let's say it's a deployable artifact such as a function, container, or module - goes beyond the size of your context window, it's going to become progressively more expensive to refactor, generate or maintain using LLM. This stacks - each request to the LLM requires a larger context so every time you attempt a task, you burn more tokens.
 
 Conceptually, the LLM can't hold it all in its memory. There are indexing and vectorization techniques that can help with this, but the fundamental logic stands.
 
@@ -57,17 +57,41 @@ This is not a new problem - we all have context windows!  This is why the indust
 
 This works - but only if you understand the business well enough to partition it cleanly, and are willing to review the separation as the business evolves.  It's OK to split a service that gets too big. It's also OK to join services that are tightly coupled.
 
-## Specify, then execute
+## But is this really necessary?
 
-There's some discussion right now about "spec driven development". In practice I think you need to document at least four perspectives - behaviour, design, security, and interface - so that your system is fit for good quality LLM code generation.
+As I learned from my refactoring exercise and then discussed it with other architects, I found myself wondering whether refactoring is really the best course of action in the long term.  *Spec Driven Development* is a hot topic right now for good reason.
+
+Granted, there's nothing new under the sun - we've always had specification - but the question we need to consider is whether the specification can now trump the code itself?
 
 I struggle with the idea that when we vibe code we commit the output rather than the prompt.
 
-There is an argument that when LLM generates the code, then the code is no longer the artifact - In theory, if you have these four documents, it should be possible to re-generate all the code from scratch - and therefore the code is disposable.
+In practice I think you need to document a system from at least four perspectives - behaviour, design, security, and interface - so that your system is fit for good quality LLM code generation.
 
-This can be a good - if expensive - test of the accuracy of your specification. Prompting the agent to generate and commit the specifications before another agent generates the code from the specification can help - I believe that this is the future of CI with LLM and tools and right now, we're starting to see frameworks emerging to do just that - [Devin](https://cognition.ai/) by Cognition and [Copilot Workspace](https://githubnext.com/projects/copilot-workspace/) by GitHub are early examples pointing in this direction.
+So - if we aren't writing code, what are we writing?
 
-Unfortunately in practice, I suspect most teams won't routinely re-generate systems from specification. For now at least, it'll be generated, edited (or re-prompted) and then committed. 
+## Describe your system
+
+* **Describe the behaviour** - this is similar to [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development), and [Gherkin](https://cucumber.io/docs/gherkin/) is a good tool. This is the product and QA perspective and the most important to preserve, as it describes the business goal.
+
+* **Describe the architecture** - this describes how your system is decomposed, and the architectural style. This is the architecture and/or senior design perspective - should it be event driven, event sourced, n-layer, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design), [hex architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)), [CQRS](https://martinfowler.com/bliki/CQRS.html)? What are the main components and what are their concerns? What tradeoffs exist between scalability, complexity and running costs? Your semantic anchors are vital here.
+
+* **Describe the security** - what are the security boundaries of your system? How does each component represent identity and authorization to the next one?
+
+* **Describe the interface** - What UX framework will you adopt? React, Native app, both? What API style do you want - OpenAPI sure, but REST, GraphQL or both? Will you have public consumers of API? Does it have to be accessible? This is the right place to include screenshots - either from a legacy system you're replacing, or from your UX design team.
+
+Feed the entire description into your coding agents. But feed subsets of the description to different agents with dedicated roles that are responsible for architecture review, QA, security audit, and so forth. These can generate tests too.
+
+## Can you re-generate your system?
+
+There is an argument that when LLM generates the code, then the code is no longer the artifact - In theory, if you have a sufficiently well described system, it should be possible to re-generate all the code from scratch - and therefore the code is disposable.
+
+Moreover, as LLM code generation improves, you will want to rewrite your system to take advantage - just as we re-compile code now to take advantage of compiler optimization.
+
+This can be a good - if expensive - test of the accuracy of your specification. Prompting the agent to generate and commit the specifications before another agent generates the code from the specification can help.  
+
+I believe that this is the future of CI with LLM and tools and right now, we're starting to see frameworks emerging to do just that - [Devin](https://cognition.ai/) by Cognition and [Copilot Workspace](https://githubnext.com/projects/copilot-workspace/) by GitHub are early examples pointing in this direction.
+
+Unfortunately in practice, I suspect most teams won't routinely re-generate systems from specification. For now at least, it'll be generated, edited or re-prompted and then committed. 
 
 There's precedence here. I've seen and suffered from generated API proxies and generated UI code that has been manually hacked - often for good reason at the time - perhaps the proxy tool didn't support a new protocol feature, or the engineer using the tool didn't want to learn how to use it. 
 
@@ -77,17 +101,4 @@ I believe this is the challenge of the new age. Development organizations that c
 
 I never learned to MOV, JMP or RET.  There's an entire generation of engineers that know how to manage memory directly, write super-efficient code, and implement compilers. These days it's a niche practice.
 
-Will the next generation of engineers be able to ignore the generated code and focus entirely on design and behaviour?  Quite possibly.
-
-So - if we aren't writing code, what are we writing?
-
-
-## Anatomy of a system description
-
-* **Behaviour description** - this is similar to [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development), and [Gherkin](https://cucumber.io/docs/gherkin/) is a good tool. This is the product and QA perspective and the most important to preserve, as it describes the business goal.
-
-* **Design description** - this describes how your system is decomposed, and the architectural style. This is the architecture and/or senior design perspective - should it be event driven, event sourced, n-layer, [DDD](https://en.wikipedia.org/wiki/Domain-driven_design), [hex architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)), [CQRS](https://martinfowler.com/bliki/CQRS.html)? What are the main components and what are their concerns? What tradeoffs exist between scalability, complexity and running costs? Your semantic anchors are vital here.
-
-* **Security description** - what are the security boundaries of your system? How does each player and component authorize or represent identity and authorization to the next one?
-
-* **Interface description** - What UX framework will you adopt? React, Native app, both? What API style do you want - OpenAPI sure, but REST, GraphQL or both? Will you have public consumers of API? This can include design screenshots.
+Will the next generation of engineers be able to ignore the generated code and focus entirely on design, security, architecture and behaviour?  Quite possibly.  
