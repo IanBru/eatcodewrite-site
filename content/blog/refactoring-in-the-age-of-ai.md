@@ -51,9 +51,9 @@ The answer is typically along the lines of
 
 Once your component - let's say it's a deployable artifact such as a function, container, or module - goes beyond the size of your context window, it's going to become progressively more expensive to refactor, generate or maintain using LLM. This stacks - each request to the LLM requires a larger context so every time you attempt a task, you burn more tokens.
 
-Conceptually, the LLM can't hold it all in its memory. There are indexing and vectorization techniques that can help with this, but the fundamental logic stands.
+Conceptually, the LLM can't hold it all in its memory. There are indexing and vectorization techniques that can help with this, but the fundamental logic stands. AI Context windows are growing, but token costs for newer models aren't falling. Context size will always be a financial limitation.
 
-This is not a new problem - we all have context windows!  This is why the industry as a whole moved toward microservices. By having different deployables with dedicated responsibilities, we can separate the system into units that are easier to understand, maintain, and ship. 
+This is not a new problem - we all have context windows!  This is why the industry as a whole moved toward microservices. By having different deployables with dedicated responsibilities, we can separate the system into units that are easier to understand, maintain, and ship.
 
 This works - but only if you understand the business well enough to partition it cleanly, and are willing to review the separation as the business evolves.  It's OK to split a service that gets too big. It's also OK to join services that are tightly coupled.
 
@@ -61,13 +61,13 @@ This works - but only if you understand the business well enough to partition it
 
 As I learned from my refactoring exercise and then discussed it with other architects, I found myself wondering whether refactoring is really the best course of action in the long term.  *Spec Driven Development* is a hot topic right now for good reason.
 
+I feel that this is where the industry is starting to shift.  
+
 Granted, there's nothing new under the sun - we've always had specification - but the question we need to consider is whether the specification can now trump the code itself?
 
 I struggle with the idea that when we vibe code we commit the output rather than the prompt.
 
-In practice I think you need to document a system from at least four perspectives - behaviour, design, security, and interface - so that your system is fit for good quality LLM code generation.
-
-So - if we aren't writing code, what are we writing?
+So - if we aren't writing code, what are we writing?  This looks like the direction of travel to me:
 
 ## Describe your system
 
@@ -91,14 +91,51 @@ This can be a good - if expensive - test of the accuracy of your specification. 
 
 I believe that this is the future of CI with LLM and tools and right now, we're starting to see frameworks emerging to do just that - [Devin](https://cognition.ai/) by Cognition and [Copilot Workspace](https://githubnext.com/projects/copilot-workspace/) by GitHub are early examples pointing in this direction.
 
-Unfortunately in practice, I suspect most teams won't routinely re-generate systems from specification. For now at least, it'll be generated, edited or re-prompted and then committed. 
+But this requires regular re-enforcement. In my experience, engineers will hack the generated code to get the job done. 
 
-There's precedence here. I've seen and suffered from generated API proxies and generated UI code that has been manually hacked - often for good reason at the time - perhaps the proxy tool didn't support a new protocol feature, or the engineer using the tool didn't want to learn how to use it. 
+Over the years, I've seen and suffered from generated code that has been manually hacked - typically API proxies or UX views.  Sometimes, this is for good reason at the time - perhaps the proxy tool didn't support a new protocol feature.  Sometimes it's just because engineer using the tool didn't have time to learn how to use it. 
 
 This rarely ends well, but it's very common.  Anyone maintaining a SaaS API over the long term will have some clients parsing XML and/or JSON directly, breaking in completely unexpected ways when the API is revised.
 
-I believe this is the challenge of the new age. Development organizations that can adopt a practice of disposable code will be the ones that can prosper in the new era.  
+For my part, I've adopted the practice of forcing the LLM - in a separate session or agent - to verify that implementation and specification remain in sync.  While this seems expensive, you can typically use a cheaper agent for this "LLM as a judge" application.
+
+To conclude, I believe this is the challenge of the new age. Development organizations that can adopt a practice of disposable code will be the ones that can prosper in the new era.  
 
 I never learned to MOV, JMP or RET.  There's an entire generation of engineers that know how to manage memory directly, write super-efficient code, and implement compilers. These days it's a niche practice.
 
 Will the next generation of engineers be able to ignore the generated code and focus entirely on design, security, architecture and behaviour?  Quite possibly.  
+
+## Further Reading
+
+**Vibe coding and technical debt**
+
+- [Vibe coding will produce the worst legacy codebases we've ever seen](https://dev.to/adioof/vibe-coding-will-produce-the-worst-legacy-codebases-weve-ever-seen-4pp1) - DEV Community
+- [AI coding is now everywhere](https://www.technologyreview.com/2025/12/15/1128352/rise-of-ai-coding-developers-2026/) - MIT Technology Review, December 2025
+
+**LLM refactoring**
+
+- [LLM-Driven Code Refactoring: Opportunities and Limitations](https://conf.researchr.org/details/icse-2025/ide-2025-papers/12/LLM-Driven-Code-Refactoring-Opportunities-and-Limitations) - ICSE IDE 2025, Queens University SEAL lab
+
+**Test-driven development with AI**
+
+- [Rethinking Test-Driven Development in the Age of AI Code Generation](https://dev.to/incomplete_developer/rethinking-test-driven-development-in-the-age-of-ai-code-generation-5bei) - DEV Community
+- [TDD, AI agents and coding with Kent Beck](https://newsletter.pragmaticengineer.com/p/tdd-ai-agents-and-coding-with-kent) - The Pragmatic Engineer
+
+**Semantic anchors and prompting**
+
+- [Semantic Anchors](https://github.com/LLM-Coding/Semantic-Anchors) - GitHub, LLM-Coding community
+- [DDD Bounded Contexts: Clear Domain Boundaries for LLM Code Generation](https://understandingdata.com/posts/ddd-bounded-contexts-for-llms/) - Understanding Data
+- [Prompting Large Language Models With the Socratic Method](https://arxiv.org/pdf/2303.08769) - arxiv, Edward Y. Chang, 2023
+
+**Spec-driven development** 
+
+- [Spec-driven development: Unpacking one of 2025's key new AI-assisted engineering practices](https://www.thoughtworks.com/en-us/insights/blog/agile-engineering-practices/spec-driven-development-unpacking-2025-new-engineering-practices) - Thoughtworks, December 2025
+- [Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) - Martin Fowler site, Birgitta Bockeler, October 2025
+- [Spec-Driven Development: From Code to Contract in the Age of AI Coding Assistants](https://arxiv.org/html/2602.00180v1) - arxiv, February 2026
+
+**The future of engineering**
+
+- [Programming Deflation](https://tidyfirst.substack.com/p/programming-deflation) - Kent Beck, September 2025
+- [When Compilers Were the AI That Scared Programmers](https://vivekhaldar.com/articles/when-compilers-were-the--ai--that-scared-programmers/) - Vivek Haldar
+- [How AI-assisted coding will change software engineering](https://newsletter.pragmaticengineer.com/p/how-ai-will-change-software-engineering) - The Pragmatic Engineer, Gergely Orosz
+- [2025: The year in LLMs](https://simonwillison.net/2025/Dec/31/the-year-in-llms/) - Simon Willison
