@@ -50,6 +50,7 @@ export default function App() {
       </main>
       <footer className="ecw-footer">
         <p>eatcodewrite is a <a href="https://copperberry.com" target="copperberry" rel="noopener noreferrer" className="ecw-footer-copperberry">copperberry</a> site.</p>
+        <p>Views expressed here are my own and don't reflect BearingPoint's.</p>
       </footer>
     </div>
   );
