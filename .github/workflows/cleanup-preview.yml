@@ -9,7 +9,8 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
-    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'refs/heads/ftr/')
+    # Delete events report the bare branch name (e.g. ftr/my-post), not refs/heads/...
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'ftr/')
     permissions:
       id-token: write
       contents: read
