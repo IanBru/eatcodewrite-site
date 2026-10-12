@@ -1,1 +1,1 @@
-AI changes how enterprise control planes should be built: desktop, automatically generated, or server-side agentic. The best path balances security and governance, and you should mine and preserve the legacy business rules rather than starting from scratch.
+Every business runs on control planes that nobody loves. AI offers three ways to rebuild them - desktop AI, generated UIs or server-side agents - and the right choice depends on blast radius and governance. Whichever you pick, mine your legacy control planes for the business rules they encode first.

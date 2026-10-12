@@ -1,1 +1,1 @@
-AI coding tools like Cursor can triple productivity, shifting the work from writing code to system design and instruction. For now, AI-assisted development still needs human oversight for architecture and debugging; Adopt these tools to have fun - and stay competitive.
+After forty years of writing code, two weeks with Cursor convinced me I may never hand-write another line - I'm producing software 3-4 times faster. Engineering judgement still matters for architecture and debugging, so get the tools and be the person directing the AI, not the one replaced by it.
