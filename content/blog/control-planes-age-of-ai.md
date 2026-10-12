@@ -19,6 +19,8 @@ AI changes this. It gives us new opportunities and forces us to rethink what con
 
 Companies now face a fundamental choice about how to build control planes. I see three main options, each with different tradeoffs.
 
+![Three columns comparing control plane architectures: Desktop AI, where staff chat to an AI on a laptop that calls MCP tools and your APIs; Generated UI, where a prompt and API contract drive a generator and CI/CD that builds a web UI; and Server-side agent, where an agent in your cloud goes through an agent gateway enforcing policy, approval and audit before calling your APIs.](images/control-planes-age-of-ai/three-architectures.svg "Three ways to build a control plane. The blue box marks where each one enforces its controls.")
+
 ### Option 1: Desktop AI as Control Plane
 
 In this approach, you assume your control plane is a desktop AI like [Claude](https://claude.ai/). Your APIs are exposed as [MCP (Model Context Protocol)](https://modelcontextprotocol.io/specification/latest/) tools, and Claude can call them during the conversation. This works well for smaller companies and gives you tremendous agility.

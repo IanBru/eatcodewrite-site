@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 376" width="780" height="376" role="img" aria-labelledby="t d">
+<title id="t">Three architectures for control planes</title>
+<desc id="d">Desktop AI: staff chat to a desktop AI on a laptop, which calls MCP tools and then your APIs; controls are enforced by the desktop AI. Generated UI: a prompt and API contract feed a generator and CI/CD, which builds a web UI over your APIs; controls are enforced by the generator. Server-side agent: staff chat to an agent in your cloud, which goes through an agent gateway enforcing policy, approval and audit before calling your APIs.</desc>
+<defs>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="ahead" d="M0,1 L10,5 L0,9 z"/></marker>
+<style>
+text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.head { fill: #163d5c; font-size: 20px; font-weight: 600; }
+.box { fill: #ffffff; stroke: #dce8e4; stroke-width: 1.5; }
+.box.hl { fill: #f0f6fa; stroke: #1e5f8c; }
+.bt { fill: #1a2526; font-size: 18px; font-weight: 600; }
+.bt.hl { fill: #163d5c; }
+.bs { fill: #4a5d5e; font-size: 15px; }
+.arrow { stroke: #a9bab6; stroke-width: 1.5; }
+.ahead { fill: #a9bab6; }
+@media (prefers-color-scheme: dark) {
+  .head, .bt.hl { fill: #9ccaf5; }
+  .box { fill: #202624; stroke: #2d3432; }
+  .box.hl { fill: #1a2432; stroke: #6eb4e8; }
+  .bt { fill: #e4e9e7; }
+  .bs { fill: #8d9c98; }
+  .arrow { stroke: #4f5c58; }
+  .ahead { fill: #4f5c58; }
+}
+</style>
+</defs>
+<text class="head" x="130" y="28" text-anchor="middle">Desktop AI</text>
+<rect class="box" x="27" y="62" width="206" height="62" rx="6"/>
+<text class="bt" x="130" y="88" text-anchor="middle">Staff member</text>
+<text class="bs" x="130" y="109" text-anchor="middle">chats in plain language</text>
+<line class="arrow" x1="130" y1="128" x2="130" y2="146" marker-end="url(#ah)"/>
+<rect class="box hl" x="25" y="152" width="210" height="62" rx="6"/>
+<text class="bt hl" x="130" y="178" text-anchor="middle">Desktop AI</text>
+<text class="bs" x="130" y="199" text-anchor="middle">e.g. Claude, on a laptop</text>
+<line class="arrow" x1="130" y1="218" x2="130" y2="236" marker-end="url(#ah)"/>
+<rect class="box" x="31.5" y="242" width="197" height="62" rx="6"/>
+<text class="bt" x="130" y="268" text-anchor="middle">MCP tools</text>
+<text class="bs" x="130" y="289" text-anchor="middle">allowlisted operations</text>
+<line class="arrow" x1="130" y1="308" x2="130" y2="326" marker-end="url(#ah)"/>
+<rect class="box" x="67.5" y="332" width="125" height="42" rx="6"/>
+<text class="bt" x="130" y="359" text-anchor="middle">Your APIs</text>
+<text class="head" x="390" y="28" text-anchor="middle">Generated UI</text>
+<rect class="box" x="270.5" y="62" width="239" height="62" rx="6"/>
+<text class="bt" x="390" y="88" text-anchor="middle">Prompt + API contract</text>
+<text class="bs" x="390" y="109" text-anchor="middle">defines the UX</text>
+<line class="arrow" x1="390" y1="128" x2="390" y2="146" marker-end="url(#ah)"/>
+<rect class="box hl" x="287" y="152" width="206" height="62" rx="6"/>
+<text class="bt hl" x="390" y="178" text-anchor="middle">Generator + CI/CD</text>
+<text class="bs" x="390" y="199" text-anchor="middle">rebuilds on API change</text>
+<line class="arrow" x1="390" y1="218" x2="390" y2="236" marker-end="url(#ah)"/>
+<rect class="box" x="290.5" y="242" width="199" height="62" rx="6"/>
+<text class="bt" x="390" y="268" text-anchor="middle">Generated web UI</text>
+<text class="bs" x="390" y="289" text-anchor="middle">forms, confirms, SSO</text>
+<line class="arrow" x1="390" y1="308" x2="390" y2="326" marker-end="url(#ah)"/>
+<rect class="box" x="327.5" y="332" width="125" height="42" rx="6"/>
+<text class="bt" x="390" y="359" text-anchor="middle">Your APIs</text>
+<text class="head" x="650" y="28" text-anchor="middle">Server-side agent</text>
+<rect class="box" x="547" y="62" width="206" height="62" rx="6"/>
+<text class="bt" x="650" y="88" text-anchor="middle">Staff member</text>
+<text class="bs" x="650" y="109" text-anchor="middle">chats in plain language</text>
+<line class="arrow" x1="650" y1="128" x2="650" y2="146" marker-end="url(#ah)"/>
+<rect class="box" x="542.5" y="152" width="215" height="62" rx="6"/>
+<text class="bt" x="650" y="178" text-anchor="middle">Agent in your cloud</text>
+<text class="bs" x="650" y="199" text-anchor="middle">model proposes actions</text>
+<line class="arrow" x1="650" y1="218" x2="650" y2="236" marker-end="url(#ah)"/>
+<rect class="box hl" x="551" y="242" width="198" height="62" rx="6"/>
+<text class="bt hl" x="650" y="268" text-anchor="middle">Agent gateway</text>
+<text class="bs" x="650" y="289" text-anchor="middle">policy, approval, audit</text>
+<line class="arrow" x1="650" y1="308" x2="650" y2="326" marker-end="url(#ah)"/>
+<rect class="box" x="587.5" y="332" width="125" height="42" rx="6"/>
+<text class="bt" x="650" y="359" text-anchor="middle">Your APIs</text>
+</svg>

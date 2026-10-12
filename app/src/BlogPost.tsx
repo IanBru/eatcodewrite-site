@@ -47,6 +47,12 @@ export default function BlogPost() {
         const h1 = main.querySelector('h1');
         setTitle(h1?.textContent ?? entry?.title ?? slug);
         if (h1) h1.remove();
+        // Post images are relative to /blog/ (e.g. images/<slug>/x.jpg); resolve against the app base
+        // so they work under previews (/preview/ftr-*/) and regardless of trailing slashes.
+        main.querySelectorAll('img[src]').forEach((img) => {
+          const src = img.getAttribute('src') ?? '';
+          if (!/^([a-z]+:|\/)/i.test(src)) img.setAttribute('src', `${base}blog/${src}`);
+        });
         setHtml(main.innerHTML);
       })
       .catch(() => setHtml(''))

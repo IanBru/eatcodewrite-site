@@ -93,7 +93,19 @@ let parseMd;
 try {
   const mod = await import('marked');
   const m = mod.default ?? mod;
-  if (typeof m.parse === 'function') parseMd = (text) => m.parse(text, { async: false });
+  if (typeof m.parse === 'function') {
+    // Images: lazy-load, and ![alt](src "caption") becomes a <figure> with <figcaption>
+    m.use({
+      renderer: {
+        image({ href, title, text }) {
+          const img = `<img src="${escapeHtml(href)}" alt="${escapeHtml(text)}" loading="lazy" decoding="async"/>`;
+          if (!title) return img;
+          return `<figure class="ecw-figure">${img}<figcaption>${escapeHtml(title)}</figcaption></figure>`;
+        },
+      },
+    });
+    parseMd = (text) => unwrapFigures(m.parse(text, { async: false }));
+  }
 } catch {
   parseMd = null;
 }
@@ -106,6 +118,40 @@ function mdToHtml(md) {
     .split(/\n\n+/)
     .map((p) => `<p>${p.replace(/\n/g, ' ').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`)
     .join('\n');
+}
+
+/** A captioned image on its own line renders as <p><figure>…</figure></p>; drop the invalid <p> wrapper. */
+function unwrapFigures(html) {
+  return html.replace(/<p>\s*(<figure class="ecw-figure">[\s\S]*?<\/figure>)\s*<\/p>/g, '$1');
+}
+
+/**
+ * Blog images live in content/blog/images/ and are referenced relatively, e.g.
+ * ![Alt text](images/my-post/photo.jpg "Optional caption"). Copied to dist/blog/images/.
+ * Fails the build if a post references a local image that does not exist.
+ */
+const MAX_IMAGE_BYTES = 1024 * 1024;
+const warnedLargeImages = new Set();
+function checkLocalImages(html, slug) {
+  const missing = [];
+  for (const [, src] of html.matchAll(/<img\s[^>]*src="([^"]+)"/g)) {
+    if (/^(https?:)?\/\//i.test(src) || src.startsWith('data:')) continue;
+    const rel = decodeURIComponent(src.split(/[?#]/)[0]).replace(/^\/blog\//, '');
+    if (rel.startsWith('/')) continue; // site-root path outside /blog; left to system-test
+    const file = path.join(blogDir, rel);
+    if (!fs.existsSync(file)) {
+      missing.push(src);
+    } else if (fs.statSync(file).size > MAX_IMAGE_BYTES && !warnedLargeImages.has(file)) {
+      warnedLargeImages.add(file);
+      console.warn(`Warning: ${slug}: image ${src} is over 1 MB; consider resizing/compressing.`);
+    }
+  }
+  if (missing.length) {
+    throw new Error(`Blog post "${slug}" references missing image(s): ${missing.join(', ')} (expected under content/blog/)`);
+  }
+  for (const [tag] of html.matchAll(/<img\s[^>]*alt=""[^>]*>/g)) {
+    console.warn(`Warning: ${slug}: image without alt text: ${tag}`);
+  }
 }
 
 /** Add target="_blank" and rel="noopener noreferrer" to external links in HTML. */
@@ -135,10 +181,19 @@ if (fs.existsSync(blogDir)) {
     const summaryPath = path.join(blogDir, `${slug}.summary.md`);
     const summary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, 'utf-8').trim() : excerpt;
     const htmlBody = addExternalLinkTargets(mdToHtml(body));
+    checkLocalImages(htmlBody, slug);
+    // Optional front matter `image: images/<slug>/cover.jpg` (relative to content/blog/) or absolute URL
+    const image = front.image
+      ? /^https?:\/\//i.test(front.image)
+        ? front.image
+        : `${baseUrl}/blog/${front.image.replace(/^\/?(blog\/)?/, '')}`
+      : '';
+    if (front.image && !/^https?:\/\//i.test(front.image)) checkLocalImages(`<img src="${front.image}">`, slug);
     const articleLd = {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: title,
+      image: image || undefined,
       datePublished: datePublished || undefined,
       dateModified: dateUpdated || undefined,
       author: author ? { '@type': 'Person', name: author } : undefined,
@@ -147,8 +202,10 @@ if (fs.existsSync(blogDir)) {
     const ldScript = jsonLdScript(articleLd);
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${escapeHtml(title)}</title>${ldScript}</head><body><main><h1>${escapeHtml(title)}</h1>${htmlBody}</main></body></html>`;
     fs.writeFileSync(path.join(distBlogDir, `${slug}.html`), html, 'utf-8');
-    blogPosts.push({ slug, title, date: datePublished, datePublished, dateUpdated, author, excerpt, summary });
+    blogPosts.push({ slug, title, date: datePublished, datePublished, dateUpdated, author, excerpt, summary, image: image || undefined });
   }
+  const blogImagesDir = path.join(blogDir, 'images');
+  if (fs.existsSync(blogImagesDir)) copyDir(blogImagesDir, path.join(distBlogDir, 'images'));
 }
 blogPosts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 fs.writeFileSync(path.join(distBlogDir, 'index.json'), JSON.stringify(blogPosts), 'utf-8');

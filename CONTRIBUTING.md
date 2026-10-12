@@ -10,8 +10,19 @@ You can add a blog post or a recipe by opening a pull request.
    - `title` — post title (defaults to filename)
    - `date` — publication date (e.g. `2025-03-05`)
    - `excerpt` — short summary for listings and RSS
+   - `image` - optional cover/share image, e.g. `images/my-great-post/cover.jpg` (used in structured data)
 4. Write the body in Markdown.
 5. Open a PR. Once merged to `main`, the site will rebuild and deploy.
+
+### Images in blog posts
+
+- Put image files in `content/blog/images/<slug>/`, e.g. `content/blog/images/my-great-post/diagram.png`.
+- Reference them with a path relative to `content/blog/`:
+  - `![Alt text](images/my-great-post/diagram.png)` - plain image
+  - `![Alt text](images/my-great-post/diagram.png "Caption text")` - the title becomes a caption (`<figure>`/`<figcaption>`)
+- Always write alt text. Images are lazy-loaded and scaled to the column width.
+- The build fails if a referenced image is missing, and warns about missing alt text or files over 1 MB.
+  Prefer compressed JPEG/WebP for photos and PNG/SVG for diagrams, around 1600px wide at most.
 
 ## Add a recipe
 
