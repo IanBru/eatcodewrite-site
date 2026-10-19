@@ -1,0 +1,1 @@
+Document processing - the elegant but unmaintainable pattern behind XSLT and Model-to-Model - is back, powering software factories, reverse engineering and tender automation. Building one taught me to use smart AI to write the pipeline, not to run it: of eight processing units, only one still needs an LLM.

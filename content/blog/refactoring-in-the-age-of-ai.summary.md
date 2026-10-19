@@ -1,1 +1,1 @@
-Vibe-refactoring is slow and token-hungry, but semantic anchors, Socratic questioning, and right-sized services all help. The deeper fix is upstream: document behaviour, architecture, security, and interface well enough that the code itself becomes disposable.
+Three weeks of vibe coding left me with an unmaintainable mess, and refactoring it with AI burned tokens at twice the normal rate. Semantic anchors, Socratic questioning and right-sized services help - but the real fix is to describe your system well enough that the code becomes disposable.
