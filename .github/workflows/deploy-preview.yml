@@ -53,9 +53,11 @@ jobs:
           cd app
           npm run build
 
-      - name: Inject noindex into preview index
+      - name: Inject noindex into every preview page
         run: |
-          sed -i 's|<head>|<head>\n  <meta name="robots" content="noindex, nofollow">|' dist/index.html
+          find dist -name '*.html' -exec sed -i 's|<head>|<head>\n  <meta name="robots" content="noindex, nofollow">|' {} +
+          missing=$(grep -L 'name="robots" content="noindex' $(find dist -name '*.html') || true)
+          if [ -n "$missing" ]; then echo "noindex missing from: $missing"; exit 1; fi
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
