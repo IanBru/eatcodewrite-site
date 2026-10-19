@@ -13,13 +13,14 @@ text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 .rough { filter: url(#rough); }
 .ink { fill: none; stroke: #1a2526; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .ink.thin { stroke-width: 1.5; }
-.capfill { fill: #1e5f8c; stroke: #1e5f8c; }
 .paper { fill: #fbfcfb; stroke: #6f817e; stroke-width: 1.6; stroke-linejoin: round; }
 .det .ring { fill: #ffffff; stroke: #6f817e; stroke-width: 2; }
 .det .ink { stroke: #4a5d5e; }
 .ai .ring { fill: #fdf5e6; stroke: #c98a1b; stroke-width: 2.2; }
 .ai .ink { stroke: #a86d0c; }
 .smart .ink { stroke: #1e5f8c; stroke-width: 2.6; }
+.smart .cap { stroke: #111414; }
+.capfill { fill: #111414; }
 .flow { fill: none; stroke: #8a9b97; stroke-width: 2; stroke-linecap: round; }
 .head { fill: none; stroke: #8a9b97; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .maint { fill: none; stroke: #1e5f8c; stroke-width: 1.8; stroke-dasharray: 7 6; stroke-linecap: round; opacity: 0.75; }
@@ -32,13 +33,14 @@ text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 .lbl { fill: #4a5d5e; font-size: 13px; font-style: italic; }
 @media (prefers-color-scheme: dark) {
   .ink { stroke: #e4e9e7; }
-  .capfill { fill: #6eb4e8; stroke: #6eb4e8; }
   .paper { fill: #1b201f; stroke: #5d6b68; }
   .det .ring { fill: #202624; stroke: #5d6b68; }
   .det .ink { stroke: #b4c0bd; }
   .ai .ring { fill: #2e2616; stroke: #e0a845; }
   .ai .ink { stroke: #f2c46d; }
   .smart .ink { stroke: #6eb4e8; }
+  .smart .cap { stroke: #c9d2cf; }
+  .capfill { fill: #050707; }
   .flow, .head { stroke: #5d6b68; }
   .maint, .headm { stroke: #6eb4e8; }
   .name, .dt { fill: #e4e9e7; }
@@ -58,10 +60,10 @@ text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 <path class="ink" d="M36,38 C42,41 46,34 51,37"/>
 <path class="ink" d="M42,15 C40,19 42,21 40,23"/>
 </g><g transform="translate(-30,-30)">
-<path class="ink capfill" d="M30,-14 L58,-4 L30,6 L2,-4 Z"/>
-<path class="ink" d="M16,1 L16,9 C22,13 38,13 44,9 L44,1"/>
-<path class="ink" d="M30,-4 L52,0 L52,13"/>
-<circle class="ink capfill" cx="52" cy="15" r="2.2"/>
+<path class="ink cap capfill" d="M30,-14 L58,-4 L30,6 L2,-4 Z"/>
+<path class="ink cap" d="M16,1 L16,9 C22,13 38,13 44,9 L44,1"/>
+<path class="ink cap" d="M30,-4 L52,0 L52,13"/>
+<circle class="ink cap capfill" cx="52" cy="15" r="2.2"/>
 </g></g>
 <text class="name smart" x="485" y="140" text-anchor="middle">Smart AI</text>
 <text class="sub" x="485" y="160" text-anchor="middle">writes, tests and replaces every unit, at build time</text>
@@ -103,9 +105,9 @@ text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 <path class="ink" d="M36,38 C42,41 46,34 51,37"/>
 <path class="ink" d="M42,15 C40,19 42,21 40,23"/>
 </g><g transform="translate(-30,-30)">
-<path class="ink capfill" d="M30,-14 L58,-4 L30,6 L2,-4 Z"/>
-<path class="ink" d="M16,1 L16,9 C22,13 38,13 44,9 L44,1"/>
-<path class="ink" d="M30,-4 L52,0 L52,13"/>
-<circle class="ink capfill" cx="52" cy="15" r="2.2"/>
+<path class="ink cap capfill" d="M30,-14 L58,-4 L30,6 L2,-4 Z"/>
+<path class="ink cap" d="M16,1 L16,9 C22,13 38,13 44,9 L44,1"/>
+<path class="ink cap" d="M30,-4 L52,0 L52,13"/>
+<circle class="ink cap capfill" cx="52" cy="15" r="2.2"/>
 </g></g><text class="sub" x="612" y="418">smart AI</text><g class="rough"><path class="maint" d="M690,413 L722,413" marker-end="url(#ahm)"/></g><text class="sub" x="732" y="418">maintains</text>
 </svg>
