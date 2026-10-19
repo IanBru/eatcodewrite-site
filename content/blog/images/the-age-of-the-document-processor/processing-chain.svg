@@ -1,120 +1,111 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 350" width="780" height="350" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" role="img" aria-labelledby="t d">
 <title id="t">A document processing chain</title>
-<desc id="d">A reverse engineering chain at run time: a codebase goes through a splitter, linker, classifier, generator and validator, producing modules, linked modules, tagged modules, a business definition and finally a validated spec. Every unit is deterministic code except the classifier, which uses a small, cheap LLM. Above the chain, at build time, a smart frontier AI writes, tests and replaces each unit.</desc>
+<desc id="d">A reverse engineering chain: a codebase flows through a splitter, linker, classifier, generator and validator, passing modules, linked modules, tagged modules and a business definition between them, and comes out as a validated spec. Four units are deterministic code, shown as cogs. The classifier uses a small, cheap LLM, shown as a plain brain. Above the chain, a smart AI, shown as a brain wearing a graduation cap, writes, tests and replaces every unit at build time.</desc>
 <defs>
-<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="ahead" d="M0,1 L10,5 L0,9 z"/></marker>
-<marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="aheadm" d="M0,1 L10,5 L0,9 z"/></marker>
+<filter id="rough" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1360" height="850">
+  <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="ah" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path class="head" d="M1,1.5 L10.5,6 L1,10.5"/></marker>
+<marker id="ahm" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path class="headm" d="M1,1.5 L10.5,6 L1,10.5"/></marker>
 <style>
 text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-.lab { fill: #4a5d5e; font-size: 12px; font-weight: 600; letter-spacing: 1px; }
-.box { fill: #ffffff; stroke: #dce8e4; stroke-width: 1.5; }
-.box.hl { fill: #f0f6fa; stroke: #1e5f8c; }
-.box.ai { fill: #fdf5e6; stroke: #c98a1b; }
-.doc { fill: #f7f9f8; stroke: #c4d3cf; stroke-width: 1.2; }
-.fold { fill: none; stroke: #c4d3cf; stroke-width: 1.2; }
-.bt { fill: #1a2526; font-size: 17px; font-weight: 600; }
-.bt.hl { fill: #163d5c; }
-.bt.ai { fill: #7a4f06; }
-.bs { fill: #4a5d5e; font-size: 13px; }
-.dt { fill: #1a2526; font-size: 13.5px; }
-.arrow { stroke: #a9bab6; stroke-width: 1.5; fill: none; }
-.ahead { fill: #a9bab6; }
-.maint { stroke: #1e5f8c; stroke-width: 1.5; stroke-dasharray: 5 4; }
-.aheadm { fill: #1e5f8c; }
+.rough { filter: url(#rough); }
+.ink { fill: none; stroke: #1a2526; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ink.thin { stroke-width: 1.5; }
+.capfill { fill: #1e5f8c; stroke: #1e5f8c; }
+.paper { fill: #fbfcfb; stroke: #6f817e; stroke-width: 1.6; stroke-linejoin: round; }
+.det .ring { fill: #ffffff; stroke: #6f817e; stroke-width: 2; }
+.det .ink { stroke: #4a5d5e; }
+.ai .ring { fill: #fdf5e6; stroke: #c98a1b; stroke-width: 2.2; }
+.ai .ink { stroke: #a86d0c; }
+.smart .ink { stroke: #1e5f8c; stroke-width: 2.6; }
+.flow { fill: none; stroke: #8a9b97; stroke-width: 2; stroke-linecap: round; }
+.head { fill: none; stroke: #8a9b97; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.maint { fill: none; stroke: #1e5f8c; stroke-width: 1.8; stroke-dasharray: 7 6; stroke-linecap: round; opacity: 0.75; }
+.headm { fill: none; stroke: #1e5f8c; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.name { fill: #1a2526; font-size: 17px; font-weight: 600; }
+.name.ai { fill: #7a4f06; }
+.name.smart { fill: #163d5c; font-size: 20px; }
+.sub { fill: #4a5d5e; font-size: 14px; }
+.dt { fill: #1a2526; font-size: 14px; }
+.lbl { fill: #4a5d5e; font-size: 13px; font-style: italic; }
 @media (prefers-color-scheme: dark) {
-  .lab, .bs { fill: #8d9c98; }
-  .box { fill: #202624; stroke: #2d3432; }
-  .box.hl { fill: #1a2432; stroke: #6eb4e8; }
-  .box.ai { fill: #2e2616; stroke: #e0a845; }
-  .doc { fill: #1b201f; stroke: #3a4441; }
-  .fold { stroke: #3a4441; }
-  .bt, .dt { fill: #e4e9e7; }
-  .bt.hl { fill: #9ccaf5; }
-  .bt.ai { fill: #f2c46d; }
-  .arrow { stroke: #4f5c58; }
-  .ahead { fill: #4f5c58; }
-  .maint { stroke: #6eb4e8; }
-  .aheadm { fill: #6eb4e8; }
+  .ink { stroke: #e4e9e7; }
+  .capfill { fill: #6eb4e8; stroke: #6eb4e8; }
+  .paper { fill: #1b201f; stroke: #5d6b68; }
+  .det .ring { fill: #202624; stroke: #5d6b68; }
+  .det .ink { stroke: #b4c0bd; }
+  .ai .ring { fill: #2e2616; stroke: #e0a845; }
+  .ai .ink { stroke: #f2c46d; }
+  .smart .ink { stroke: #6eb4e8; }
+  .flow, .head { stroke: #5d6b68; }
+  .maint, .headm { stroke: #6eb4e8; }
+  .name, .dt { fill: #e4e9e7; }
+  .name.ai { fill: #f2c46d; }
+  .name.smart { fill: #9ccaf5; }
+  .sub, .lbl { fill: #8d9c98; }
 }
 </style>
 </defs>
-
-<!-- Row labels -->
-<text class="lab" x="65" y="57" text-anchor="middle">BUILD TIME</text>
-<text class="lab" x="65" y="186" text-anchor="middle">RUN TIME</text>
-
-<!-- Smart AI -->
-<rect class="box hl" x="137" y="20" width="636" height="64" rx="6"/>
-<text class="bt hl" x="455" y="47" text-anchor="middle">Smart AI</text>
-<text class="bs" x="455" y="69" text-anchor="middle">frontier model writes, tests and replaces each unit</text>
-
-<!-- Maintenance lines -->
-<line class="maint" x1="195" y1="86" x2="195" y2="146" marker-end="url(#ahm)"/>
-<line class="maint" x1="325" y1="86" x2="325" y2="146" marker-end="url(#ahm)"/>
-<line class="maint" x1="455" y1="86" x2="455" y2="146" marker-end="url(#ahm)"/>
-<line class="maint" x1="585" y1="86" x2="585" y2="146" marker-end="url(#ahm)"/>
-<line class="maint" x1="715" y1="86" x2="715" y2="146" marker-end="url(#ahm)"/>
-
-<!-- Units -->
-<rect class="box" x="137" y="150" width="116" height="62" rx="6"/>
-<text class="bt" x="195" y="177" text-anchor="middle">Splitter</text>
-<text class="bs" x="195" y="198" text-anchor="middle">deterministic</text>
-
-<rect class="box" x="267" y="150" width="116" height="62" rx="6"/>
-<text class="bt" x="325" y="177" text-anchor="middle">Linker</text>
-<text class="bs" x="325" y="198" text-anchor="middle">deterministic</text>
-
-<rect class="box ai" x="397" y="150" width="116" height="62" rx="6"/>
-<text class="bt ai" x="455" y="177" text-anchor="middle">Classifier</text>
-<text class="bs" x="455" y="198" text-anchor="middle">small LLM</text>
-
-<rect class="box" x="527" y="150" width="116" height="62" rx="6"/>
-<text class="bt" x="585" y="177" text-anchor="middle">Generator</text>
-<text class="bs" x="585" y="198" text-anchor="middle">deterministic</text>
-
-<rect class="box" x="657" y="150" width="116" height="62" rx="6"/>
-<text class="bt" x="715" y="177" text-anchor="middle">Validator</text>
-<text class="bs" x="715" y="198" text-anchor="middle">deterministic</text>
-
-<!-- Documents (folded corner) -->
-<path class="doc" d="M5,248 h108 l12,12 v36 h-120 z"/><path class="fold" d="M113,248 v12 h12"/>
-<text class="dt" x="65" y="277" text-anchor="middle">Codebase</text>
-
-<path class="doc" d="M135,248 h108 l12,12 v36 h-120 z"/><path class="fold" d="M243,248 v12 h12"/>
-<text class="dt" x="195" y="277" text-anchor="middle">Modules</text>
-
-<path class="doc" d="M265,248 h108 l12,12 v36 h-120 z"/><path class="fold" d="M373,248 v12 h12"/>
-<text class="dt" x="325" y="277" text-anchor="middle">Linked modules</text>
-
-<path class="doc" d="M395,248 h108 l12,12 v36 h-120 z"/><path class="fold" d="M503,248 v12 h12"/>
-<text class="dt" x="455" y="277" text-anchor="middle">Tagged modules</text>
-
-<path class="doc" d="M525,248 h108 l12,12 v36 h-120 z"/><path class="fold" d="M633,248 v12 h12"/>
-<text class="dt" x="585" y="268" text-anchor="middle">Business</text>
-<text class="dt" x="585" y="286" text-anchor="middle">definition</text>
-
-<path class="doc" d="M655,248 h108 l12,12 v36 h-120 z"/><path class="fold" d="M763,248 v12 h12"/>
-<text class="dt" x="715" y="277" text-anchor="middle">Validated spec</text>
-
-<!-- Unit -> output document -->
-<line class="arrow" x1="195" y1="214" x2="195" y2="244" marker-end="url(#ah)"/>
-<line class="arrow" x1="325" y1="214" x2="325" y2="244" marker-end="url(#ah)"/>
-<line class="arrow" x1="455" y1="214" x2="455" y2="244" marker-end="url(#ah)"/>
-<line class="arrow" x1="585" y1="214" x2="585" y2="244" marker-end="url(#ah)"/>
-<line class="arrow" x1="715" y1="214" x2="715" y2="244" marker-end="url(#ah)"/>
-
-<!-- Document -> next unit -->
-<line class="arrow" x1="105" y1="246" x2="150" y2="216" marker-end="url(#ah)"/>
-<line class="arrow" x1="235" y1="246" x2="280" y2="216" marker-end="url(#ah)"/>
-<line class="arrow" x1="365" y1="246" x2="410" y2="216" marker-end="url(#ah)"/>
-<line class="arrow" x1="495" y1="246" x2="540" y2="216" marker-end="url(#ah)"/>
-<line class="arrow" x1="625" y1="246" x2="670" y2="216" marker-end="url(#ah)"/>
-
-<!-- Legend -->
-<rect class="box" x="137" y="321" width="18" height="13" rx="3"/>
-<text class="bs" x="163" y="332">deterministic code</text>
-<rect class="box ai" x="310" y="321" width="18" height="13" rx="3"/>
-<text class="bs" x="336" y="332">small, cheap LLM</text>
-<line class="maint" x1="480" y1="327" x2="514" y2="327" marker-end="url(#ahm)"/>
-<text class="bs" x="522" y="332">maintained by the smart AI</text>
+<g class="smart rough" transform="translate(485,78) scale(1.25)"><g transform="translate(-30,-30)">
+<path class="ink" d="M30,9 C23,4 13,7 12,15 C5,17 2,27 7,32 C3,39 8,49 16,49 C19,55 28,56 30,51 C32,56 41,55 44,49 C52,49 57,39 53,32 C58,27 55,17 48,15 C47,7 37,4 30,9 Z"/>
+<path class="ink" d="M30,10 C29,24 31,36 30,50"/>
+<path class="ink" d="M12,24 C17,21 20,28 25,25"/>
+<path class="ink" d="M9,37 C14,34 18,41 24,38"/>
+<path class="ink" d="M18,15 C20,19 18,21 20,23"/>
+<path class="ink" d="M35,25 C40,28 43,21 48,24"/>
+<path class="ink" d="M36,38 C42,41 46,34 51,37"/>
+<path class="ink" d="M42,15 C40,19 42,21 40,23"/>
+</g><g transform="translate(-30,-30)">
+<path class="ink capfill" d="M30,-14 L58,-4 L30,6 L2,-4 Z"/>
+<path class="ink" d="M16,1 L16,9 C22,13 38,13 44,9 L44,1"/>
+<path class="ink" d="M30,-4 L52,0 L52,13"/>
+<circle class="ink capfill" cx="52" cy="15" r="2.2"/>
+</g></g>
+<text class="name smart" x="485" y="140" text-anchor="middle">Smart AI</text>
+<text class="sub" x="485" y="160" text-anchor="middle">writes, tests and replaces every unit, at build time</text>
+<g class="rough"><path class="maint" d="M452.6,176 Q215,188 215,235" marker-end="url(#ahm)"/><path class="maint" d="M468.8,176 Q350,188 350,235" marker-end="url(#ahm)"/><path class="maint" d="M485,176 Q485,188 485,235" marker-end="url(#ahm)"/><path class="maint" d="M501.2,176 Q620,188 620,235" marker-end="url(#ahm)"/><path class="maint" d="M517.4,176 Q755,188 755,235" marker-end="url(#ahm)"/></g>
+<g class="rough"><path class="paper" d="M28,257 h90 l14,14 v42 h-104 z"/><path class="ink thin" d="M118,257 v14 h14"/></g><text class="dt" x="80" y="290" text-anchor="middle">Codebase</text>
+<g class="rough"><path class="paper" d="M832,257 h90 l14,14 v42 h-104 z"/><path class="ink thin" d="M922,257 v14 h14"/></g><text class="dt" x="884" y="281" text-anchor="middle">Validated</text><text class="dt" x="884" y="298" text-anchor="middle">spec</text>
+<g class="rough"><path class="flow" d="M132,286 Q149.5,281 167,285" marker-end="url(#ah)"/><path class="flow" d="M263,286 Q282.5,287 302,285" marker-end="url(#ah)"/><path class="flow" d="M398,286 Q417.5,281 437,285" marker-end="url(#ah)"/><path class="flow" d="M533,286 Q552.5,287 572,285" marker-end="url(#ah)"/><path class="flow" d="M668,286 Q687.5,281 707,285" marker-end="url(#ah)"/><path class="flow" d="M803,286 Q815.5,287 828,285" marker-end="url(#ah)"/></g>
+<text class="lbl" x="282.5" y="271" text-anchor="middle">Modules</text><text class="lbl" x="417.5" y="255" text-anchor="middle">Linked</text><text class="lbl" x="417.5" y="271" text-anchor="middle">modules</text><text class="lbl" x="552.5" y="255" text-anchor="middle">Tagged</text><text class="lbl" x="552.5" y="271" text-anchor="middle">modules</text><text class="lbl" x="687.5" y="255" text-anchor="middle">Business</text><text class="lbl" x="687.5" y="271" text-anchor="middle">definition</text>
+<g class="det"><g class="rough"><circle class="ring" cx="215" cy="285" r="42"/></g><g class="rough" transform="translate(215,285)"><path class="ink" d="M21,0 L20.6,4.1 L13.9,5.7 L12.5,8.3 L14.8,14.8 L11.7,17.5 L5.7,13.9 L2.9,14.7 L0,21 L-4.1,20.6 L-5.7,13.9 L-8.3,12.5 L-14.8,14.8 L-17.5,11.7 L-13.9,5.7 L-14.7,2.9 L-21,0 L-20.6,-4.1 L-13.9,-5.7 L-12.5,-8.3 L-14.8,-14.8 L-11.7,-17.5 L-5.7,-13.9 L-2.9,-14.7 L0,-21 L4.1,-20.6 L5.7,-13.9 L8.3,-12.5 L14.8,-14.8 L17.5,-11.7 L13.9,-5.7 L14.7,-2.9 Z"/><path class="ink" d="M8,0 A8,8 0 1 0 -8,0 A8,8 0 1 0 8,0 Z"/></g></g><text class="name" x="215" y="355" text-anchor="middle">Splitter</text>
+<g class="det"><g class="rough"><circle class="ring" cx="350" cy="285" r="42"/></g><g class="rough" transform="translate(350,285)"><path class="ink" d="M21,0 L20.6,4.1 L13.9,5.7 L12.5,8.3 L14.8,14.8 L11.7,17.5 L5.7,13.9 L2.9,14.7 L0,21 L-4.1,20.6 L-5.7,13.9 L-8.3,12.5 L-14.8,14.8 L-17.5,11.7 L-13.9,5.7 L-14.7,2.9 L-21,0 L-20.6,-4.1 L-13.9,-5.7 L-12.5,-8.3 L-14.8,-14.8 L-11.7,-17.5 L-5.7,-13.9 L-2.9,-14.7 L0,-21 L4.1,-20.6 L5.7,-13.9 L8.3,-12.5 L14.8,-14.8 L17.5,-11.7 L13.9,-5.7 L14.7,-2.9 Z"/><path class="ink" d="M8,0 A8,8 0 1 0 -8,0 A8,8 0 1 0 8,0 Z"/></g></g><text class="name" x="350" y="355" text-anchor="middle">Linker</text>
+<g class="ai"><g class="rough"><circle class="ring" cx="485" cy="285" r="42"/></g><g class="rough" transform="translate(485,285)"><g transform="scale(0.78)"><g transform="translate(-30,-30)">
+<path class="ink" d="M30,9 C23,4 13,7 12,15 C5,17 2,27 7,32 C3,39 8,49 16,49 C19,55 28,56 30,51 C32,56 41,55 44,49 C52,49 57,39 53,32 C58,27 55,17 48,15 C47,7 37,4 30,9 Z"/>
+<path class="ink" d="M30,10 C29,24 31,36 30,50"/>
+<path class="ink" d="M12,24 C17,21 20,28 25,25"/>
+<path class="ink" d="M9,37 C14,34 18,41 24,38"/>
+<path class="ink" d="M18,15 C20,19 18,21 20,23"/>
+<path class="ink" d="M35,25 C40,28 43,21 48,24"/>
+<path class="ink" d="M36,38 C42,41 46,34 51,37"/>
+<path class="ink" d="M42,15 C40,19 42,21 40,23"/>
+</g></g></g></g><text class="name ai" x="485" y="355" text-anchor="middle">Classifier</text>
+<g class="det"><g class="rough"><circle class="ring" cx="620" cy="285" r="42"/></g><g class="rough" transform="translate(620,285)"><path class="ink" d="M21,0 L20.6,4.1 L13.9,5.7 L12.5,8.3 L14.8,14.8 L11.7,17.5 L5.7,13.9 L2.9,14.7 L0,21 L-4.1,20.6 L-5.7,13.9 L-8.3,12.5 L-14.8,14.8 L-17.5,11.7 L-13.9,5.7 L-14.7,2.9 L-21,0 L-20.6,-4.1 L-13.9,-5.7 L-12.5,-8.3 L-14.8,-14.8 L-11.7,-17.5 L-5.7,-13.9 L-2.9,-14.7 L0,-21 L4.1,-20.6 L5.7,-13.9 L8.3,-12.5 L14.8,-14.8 L17.5,-11.7 L13.9,-5.7 L14.7,-2.9 Z"/><path class="ink" d="M8,0 A8,8 0 1 0 -8,0 A8,8 0 1 0 8,0 Z"/></g></g><text class="name" x="620" y="355" text-anchor="middle">Generator</text>
+<g class="det"><g class="rough"><circle class="ring" cx="755" cy="285" r="42"/></g><g class="rough" transform="translate(755,285)"><path class="ink" d="M21,0 L20.6,4.1 L13.9,5.7 L12.5,8.3 L14.8,14.8 L11.7,17.5 L5.7,13.9 L2.9,14.7 L0,21 L-4.1,20.6 L-5.7,13.9 L-8.3,12.5 L-14.8,14.8 L-17.5,11.7 L-13.9,5.7 L-14.7,2.9 L-21,0 L-20.6,-4.1 L-13.9,-5.7 L-12.5,-8.3 L-14.8,-14.8 L-11.7,-17.5 L-5.7,-13.9 L-2.9,-14.7 L0,-21 L4.1,-20.6 L5.7,-13.9 L8.3,-12.5 L14.8,-14.8 L17.5,-11.7 L13.9,-5.7 L14.7,-2.9 Z"/><path class="ink" d="M8,0 A8,8 0 1 0 -8,0 A8,8 0 1 0 8,0 Z"/></g></g><text class="name" x="755" y="355" text-anchor="middle">Validator</text>
+<g class="det rough" transform="translate(250,413) scale(0.5)"><path class="ink" d="M21,0 L20.6,4.1 L13.9,5.7 L12.5,8.3 L14.8,14.8 L11.7,17.5 L5.7,13.9 L2.9,14.7 L0,21 L-4.1,20.6 L-5.7,13.9 L-8.3,12.5 L-14.8,14.8 L-17.5,11.7 L-13.9,5.7 L-14.7,2.9 L-21,0 L-20.6,-4.1 L-13.9,-5.7 L-12.5,-8.3 L-14.8,-14.8 L-11.7,-17.5 L-5.7,-13.9 L-2.9,-14.7 L0,-21 L4.1,-20.6 L5.7,-13.9 L8.3,-12.5 L14.8,-14.8 L17.5,-11.7 L13.9,-5.7 L14.7,-2.9 Z"/><path class="ink" d="M8,0 A8,8 0 1 0 -8,0 A8,8 0 1 0 8,0 Z"/></g><text class="sub" x="270" y="418">deterministic code</text><g class="ai rough" transform="translate(425,412) scale(0.38)"><g transform="translate(-30,-30)">
+<path class="ink" d="M30,9 C23,4 13,7 12,15 C5,17 2,27 7,32 C3,39 8,49 16,49 C19,55 28,56 30,51 C32,56 41,55 44,49 C52,49 57,39 53,32 C58,27 55,17 48,15 C47,7 37,4 30,9 Z"/>
+<path class="ink" d="M30,10 C29,24 31,36 30,50"/>
+<path class="ink" d="M12,24 C17,21 20,28 25,25"/>
+<path class="ink" d="M9,37 C14,34 18,41 24,38"/>
+<path class="ink" d="M18,15 C20,19 18,21 20,23"/>
+<path class="ink" d="M35,25 C40,28 43,21 48,24"/>
+<path class="ink" d="M36,38 C42,41 46,34 51,37"/>
+<path class="ink" d="M42,15 C40,19 42,21 40,23"/>
+</g></g><text class="sub" x="445" y="418">small, cheap LLM</text><g class="smart rough" transform="translate(592,414) scale(0.38)"><g transform="translate(-30,-30)">
+<path class="ink" d="M30,9 C23,4 13,7 12,15 C5,17 2,27 7,32 C3,39 8,49 16,49 C19,55 28,56 30,51 C32,56 41,55 44,49 C52,49 57,39 53,32 C58,27 55,17 48,15 C47,7 37,4 30,9 Z"/>
+<path class="ink" d="M30,10 C29,24 31,36 30,50"/>
+<path class="ink" d="M12,24 C17,21 20,28 25,25"/>
+<path class="ink" d="M9,37 C14,34 18,41 24,38"/>
+<path class="ink" d="M18,15 C20,19 18,21 20,23"/>
+<path class="ink" d="M35,25 C40,28 43,21 48,24"/>
+<path class="ink" d="M36,38 C42,41 46,34 51,37"/>
+<path class="ink" d="M42,15 C40,19 42,21 40,23"/>
+</g><g transform="translate(-30,-30)">
+<path class="ink capfill" d="M30,-14 L58,-4 L30,6 L2,-4 Z"/>
+<path class="ink" d="M16,1 L16,9 C22,13 38,13 44,9 L44,1"/>
+<path class="ink" d="M30,-4 L52,0 L52,13"/>
+<circle class="ink capfill" cx="52" cy="15" r="2.2"/>
+</g></g><text class="sub" x="612" y="418">smart AI</text><g class="rough"><path class="maint" d="M690,413 L722,413" marker-end="url(#ahm)"/></g><text class="sub" x="732" y="418">maintains</text>
 </svg>

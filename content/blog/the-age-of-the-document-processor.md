@@ -42,7 +42,7 @@ Having said that, friends don't let ~~friends~~ agents [parse HTML with regular 
 
 Like any application pattern, document processors come with their own set of rules, quirks, advantages and disadvantages.  If you're building one, it helps to know about it.
 
-I built a reverse engineering software factory over the past few months, and I think I've learned a few things - I'm hoping you can avoid my mistakes.  
+I built a reverse engineering software factory over the past few months, and I think I've learned a few things - maybe you can avoid my mistakes.  
 
 ## What's a document processor?
 
@@ -80,7 +80,7 @@ Make sure that your flow is correct, and that you can re-process your source doc
 
 ### Learn from the data engineers
 
-Document processors aren't a huge distance away from ETLs. They are more loosely structured, they can allow for human intervention where needed, and some of the content can be less schema-obsessed. 
+Document processors aren't a huge distance away from ETLs. The entities are bigger and tend to be more deeply nested. They are also more loosely structured, they can allow for human intervention where needed, and some of the content can be less schema-obsessed. 
 
 There are a lot of engineering lessons in data mining and data processing that can be directly applied to document processing units including Python libraries, parsers, and training courses.  Look at [Dagster](https://docs.dagster.io/guides/build/assets) and [OpenLineage](https://openlineage.io/) for examples of how they're approaching similar problems.
 
@@ -104,4 +104,6 @@ If you're doing a significant amount of AI context engineering, you're probably 
 
 However, if, like me, you find yourself trying to trace lineage, gradually replacing AI logic with deterministic compiler-style logic, or chaining document versions together, you may find the document processor a useful metaphor.
 
-Or maybe not. A workflow engine built as a document processor will waste time and cycles on versioning and reprocessing. Documents don't ledger particularly well. Perhaps it's just a wrapper around a database. There are plenty of them about.
+Or maybe not. A workflow engine built as a document processor will waste time and cycles on versioning and reprocessing. Documents don't ledger particularly well. 
+
+Perhaps it's just a wrapper around a database. There are plenty of them about.
